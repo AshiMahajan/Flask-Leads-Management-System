@@ -1,0 +1,24 @@
+{% extends "base.html" %} {% block title %}Logout{% endblock %} {% block content
+%} {% endblock %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="{{url_for('static',filename='css/output.css')}}"
+      rel="stylesheet"
+    />
+
+    <title>{% block title %}Logout{% endblock %}</title>
+  </head>
+  <body>
+    <div>
+      <h1>Logout Successful!</h1>
+      {% block button%}
+      <button id="home_button" onclick="window.location.href='/'">Home</button>
+      {% endblock %}
+    </div>
+  </body>
+</html>

@@ -33,21 +33,21 @@ class Employees(db.Model):
         self.option = option
 
 
-class Managers(db.Model):
-    __tablename__ = "managers"
-    id = db.Column(db.Integer, primary_key=True)
-    lead_name = db.Column(db.String, nullable=False)
-    service = db.Column(db.String, nullable=False)
-    phone_number = db.Column(db.String, unique=True, nullable=False)
-    query = db.Column(db.String, nullable=False)
-    field = db.Column(db.String, nullable=False)
+# class Managers(db.Model):
+#     __tablename__ = "managers"
+#     id = db.Column(db.Integer, primary_key=True)
+#     lead_name = db.Column(db.String, nullable=False)
+#     service = db.Column(db.String, nullable=False)
+#     phone_number = db.Column(db.String, unique=True, nullable=False)
+#     query = db.Column(db.String, nullable=False)
+#     field = db.Column(db.String, nullable=False)
 
-    def __init__(self, lead_name, service, phone_number, query, field):
-        self.lead_name = lead_name
-        self.service = service
-        self.phone_number = phone_number
-        self.query = query
-        self.field = field
+#     def __init__(self, lead_name, service, phone_number, query, field):
+#         self.lead_name = lead_name
+#         self.service = service
+#         self.phone_number = phone_number
+#         self.query = query
+#         self.field = field
 
 
 class Users(db.Model):
@@ -57,6 +57,7 @@ class Users(db.Model):
     service = db.Column(db.String, nullable=False)
     phone_number = db.Column(db.String, unique=True, nullable=False)
     query = db.Column(db.String, nullable=False)
+    status = db.Column(default="pending")
 
     def __init__(self, lead_name, service, phone_number, query):
         self.lead_name = lead_name
@@ -71,16 +72,6 @@ def save_user(username, email, password, option):
         return False
     user = Employees(username=username, email=email, password=password, option=option)
     db.session.add(user)
-    db.session.commit()
-    return True
-
-
-def save_contact(service, phone_number, query):
-    if Users.query.filter_by(phone_number=phone_number).first():
-        flash("Phone number already exists.", "error")
-        return False
-    contact = Users(service=service, phone_number=phone_number, query=query)
-    db.session.add(contact)
     db.session.commit()
     return True
 
@@ -147,7 +138,7 @@ def login():
                 {"username": username, "email": email, "user_option": user_option}
             )
             return redirect(
-                url_for("login_user" if user_option == "user" else "login_admin")
+                url_for("login_user" if user_option == "user" else "login_manager")
             )
         else:
             flash(
@@ -168,7 +159,7 @@ def contact_us():
         query = request.form.get("query")
 
         contact = Users(
-            lead_name=lead_name, service=service, phone_number=phone_number, query=query
+            lead_name=lead_name, phone_number=phone_number, service=service, query=query
         )
         db.session.add(contact)
         db.session.commit()
@@ -179,33 +170,69 @@ def contact_us():
     return render_template("contact_us.html")
 
 
-def save_contact(lead_name, service, phone_number, query):
-    if Users.query.filter_by(phone_number=phone_number).first():
-        flash("Phone number already exists.", "error")
-        return False
-
-    contact = Users(
-        lead_name=lead_name, service=service, phone_number=phone_number, query=query
-    )
-    db.session.add(contact)
-    db.session.commit()
-    return True
-
-
 @app.route("/login/manager", methods=["GET", "POST"])
-def manager():
+def login_manager():
     if session.get("user_option") == "manager":
+        # total_users = db.session.query(func.count(Users.id)).scalar()
+        # converted_leads = Users.query.filter_by(status="converted").count()
+        # declined_leads = Users.query.filter_by(status="declined").count()
         return render_template(
             "manager.html",
+            # total_users=total_users,
+            # converted_leads=converted_leads,
+            # declined_leads=declined_leads,
         )
-        total_users = Users.query.count()
-    flash("Access denied. Admins only.", "error")
+    flash("Access denied. Managers only.", "error")
     return redirect(url_for("login"))
 
 
-@app.route("/dashboard")
-def manager_dashboard():
-    return render_template("dashboard.html")
+@app.route("/manager/all_leads")
+def all_leads():
+    return render_template("all_leads.html")
+
+
+@app.route("/manager/all_leads/add", methods=["GET", "POST"])
+def all_leads_add():
+    if request.method == "POST":
+        lead_name = request.form.get("lead_name")
+        service = request.form.get("service")
+        phone_number = request.form.get("phone_number")
+        query = request.form.get("query")
+        contact = Users(
+            lead_name=lead_name,
+            service=service,
+            phone_number=phone_number,
+            query=query,
+        )
+        db.session.add(contact)
+        db.session.commit()
+    return render_template("manager_add.html")
+
+
+@app.route("/manager/all_leads/update", methods=["GET", "POST"])
+def all_leads_update():
+    if request.method == "POST":
+        lead_name = request.form.get("lead_name")
+        service = request.form.get("service")
+        query = request.form.get("query")
+        status = request.form.get("status")
+        if not lead_name:
+            flash("Enter phone number to proceed further.", "error")
+        else:
+            users = Users.query.filter_by(lead_name=lead_name).first()
+        if users:
+            users.service = service
+            users.query = query
+            users.status = status
+            db.session.commit()
+            return "Done"
+    return render_template("manager_update.html")
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return render_template("logout.html")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,17 @@
+{% extends "manager.html" %} {% block title %}Management{% endblock %}
+    
+{% block content %}
+<form action="/manager/all_leads/update" method="post">
+    <label for="lead_name">Lead Name:</label>
+    <input type="text" id="lead_name" name="lead_name" required /><br />
+    <label for="service">Service:</label>
+    <input type="text" id="service" name="service" required /><br />
+    <label for="query">Query:</label>
+    <input type="text" id="query" name="query" required /><br />
+    <label for="status">status:</label>
+    <input type="text" id="status" name="status" required /><br />
+    <button type="submit">Submit</button>
+</form>
+{%endblock%}
+</body>
+</html>

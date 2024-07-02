@@ -1,0 +1,40 @@
+{% extends "manager.html" %} {% block title %}Management{% endblock %}
+    
+{% block content %}
+<div class="w-3/4 flex flex-col justify-center items-center">
+    <button
+      id="buttons_for_dashboard"
+      onclick="window.location.href='/manager/all_leads/add'"
+    >
+      <img
+        src="/static/add.png"
+        alt="add"
+        id="image_dashboard"
+        style="width: 200%; cursor: pointer"
+      />
+    </button>
+    <button
+      id="buttons_for_dashboard"
+      onclick="window.location.href='/manager/all_leads/update'"
+    >
+      <img
+        src="/static/update.png"
+        alt="update"
+        id="image_dashboard"
+        style="width: 200%; cursor: pointer"
+      />
+    </button>
+    <button
+      id="buttons_for_dashboard"
+      onclick="window.location.href='/manager/all_leads/delete'"
+    >
+      <img
+        src="/static/delete.png"
+        alt="delete"
+        id="image_dashboard"
+        style="width: 200%; cursor: pointer"
+      />
+    </button>
+    {%endblock%}
+</body>
+</html>

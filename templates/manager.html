@@ -11,17 +11,32 @@
   </head>
   <body>
     <div class="flex h-screen">
-      {% block sidebar %}
       <div class="w-1/4 bg-blue-500 items-stretch p-20 flex flex-col space-y-4">
-        <button type="submit" class="text-white">Dashboard</button>
-        <button type="submit" class="text-white">All</button>
+        <button
+          type="submit"
+          onclick="window.location.href='/login/manager'"
+          class="text-white"
+        >
+          Dashboard
+        </button>
+        <button
+          type="submit"
+          onclick="window.location.href='/manager/all_leads'"
+          class="text-white"
+        >
+          All
+        </button>
       </div>
-      {% endblock %}
+      {% block content %}
       <div class="w-3/4 flex flex-col justify-center items-center">
         <span class="text-xl">Total Leads: {{ total_users }}</span>
         <span class="text-xl">Converted Leads: {{ converted_leads }}</span>
         <span class="text-xl">Declined Leads: {{ declined_leads }}</span>
       </div>
+      {% endblock %}
+      <button type="button" onclick="window.location.href='/logout'">
+        Logout
+      </button>
     </div>
   </body>
 </html>
