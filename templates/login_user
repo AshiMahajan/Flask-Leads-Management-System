@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="{{url_for('static',filename='css/output.css')}}"
+      rel="stylesheet"
+    />
+    <title>{% block title %}Signup{% endblock %}</title>
+  </head>
+  <body class="bg-red-700">
+    {% block content %} {% if session['username'] %}
+    <div class="session_for_login_user">
+      <h1 id="login_session">
+        Hello <span id="name_display">{{ session["username"] }}</span>
+      </h1>
+      <div class="login_user">
+        <div id="flash_msg_login">
+          {% with messages = get_flashed_messages() %} {% if messages %} {% for
+          message in messages %} {{ message }} {% endfor %} {% endif %} {%
+          endwith %}
+        </div>
+        <button type="button" onclick="window.location.href='/contact_us'">
+          Contact Us
+        </button>
+        <button type="button" onclick="window.location.href='/logout'">
+          Logout
+        </button>
+      </div>
+    </div>
+    {% else %}
+    <h1
+      id="login_first"
+      style="
+        font-family: 'Arial', sans-serif;
+        background-color: #e5e0e0c0;
+        margin: 0;
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      "
+    >
+      Welcome! Please <a href="/login">Login</a> first
+    </h1>
+    {% endif %} {% endblock %}
+  </body>
+</html>

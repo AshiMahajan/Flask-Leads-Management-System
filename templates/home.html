@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="{{url_for('static',filename='css/output.css')}}"
+      rel="stylesheet"
+    />
+    <title>{% block title %}Signup{% endblock %}</title>
+  </head>
+  <body class="bg-red-700">
+    <div class="container">
+      <h1>Welcome</h1>
+      <div class="sign_log">
+        <div class="button-container">
+          <img
+            id="images"
+            src="{{ url_for('static', filename='add-friend.png') }}"
+            alt="Signup"
+            class="icon"
+          />
+          <button onclick="window.location.href='/signup'">Signup</button>
+        </div>
+        <div class="button-container">
+          <img
+            id="images"
+            src="{{ url_for('static', filename='enter.png') }}"
+            alt="Login"
+            class="icon"
+          />
+          <button onclick="window.location.href='/login'">Login</button>
+          <button onclick="window.location.href='/contact_us'">
+            Contact Us
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

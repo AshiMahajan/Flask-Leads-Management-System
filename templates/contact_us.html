@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="{{ url_for('static', filename='css/output.css') }}"
+      rel="stylesheet"
+    />
+    <title>{% block title %}Contact Us{% endblock %}</title>
+  </head>
+  <body class="bg-red-700">
+    {% block content %}
+    <form action="{{ url_for('contact_us') }}" method="post" class="contact_us">
+      <label for="lead_name">Lead Name:</label>
+      <input type="text" id="lead_name" name="lead_name" required /><br />
+      <label for="service">Service:</label>
+      <input type="text" id="service" name="service" required /><br />
+      <label for="phone">Phone Number:</label>
+      <input type="text" id="phone" name="phone_number" required /><br />
+      <label for="query">Query:</label>
+      <textarea id="query" name="query" required></textarea><br />
+      <p id="flash_msg_contact_us">
+        {% with messages = get_flashed_messages() %} {% if messages %} {% for
+        message in messages %} {{ message }} {% endfor %} {% endif %} {% endwith
+        %}
+      </p>
+      <button type="submit">Submit</button>
+    </form>
+    {% endblock %}
+  </body>
+</html>
