@@ -90,6 +90,7 @@ def signup():
             (option == "admin" and not email.endswith("@marvel.com"))
             or (option == "user" and email.endswith("@marvel.com"))
             or (option == "manager" and not email.endswith("@manager.com"))
+            or (option == "user" and email.endswith("@manager.com"))
         ):
             flash(f"Invalid email for {option} option!", "error")
         elif not (8 <= len(password) <= 13):
@@ -120,9 +121,14 @@ def login():
             session.update(
                 {"username": username, "email": email, "user_option": user_option}
             )
-            return redirect(
-                url_for("login_user" if user_option == "user" else "login_manager")
-            )
+            if user_option == "user":
+                return redirect(url_for("login_user"))
+            else:
+                return redirect(
+                    url_for(
+                        "login_admin" if user_option == "admin" else "login_manager"
+                    )
+                )
         else:
             flash(
                 Markup(
@@ -151,6 +157,11 @@ def contact_us():
             flash("Form submitted!", "success")
             return redirect(url_for("contact_us"))
     return render_template("contact_us.html")
+
+
+@app.route("/login/admin", methods=["GET", "POST"])
+def login_admin():
+    return render_template("login_admin.html")
 
 
 @app.route("/login/user", methods=["GET", "POST"])
