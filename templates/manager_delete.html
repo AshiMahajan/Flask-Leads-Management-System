@@ -1,12 +1,33 @@
 {% extends "manager.html" %} {% block title %}Delete Lead{% endblock %} {% block
 content %}
-<form action="{{ url_for('all_leads_delete') }}" method="post">
-  <label for="lead_name">Lead Name:</label>
-  <input type="text" id="lead_name" name="lead_name" required /><br />
-  <button type="submit">Submit</button>
+<form
+  action="/manager/all_leads/delete"
+  method="post"
+  class="flex flex-col w-3/4 items-center self-center h-full"
+  style="
+    width: 40%;
+    align-self: center;
+    background-color: rgba(110, 141, 132, 0.507);
+    margin-left: 10rem;
+    border-radius: 24px;
+    box-sizing: border-box;
+    border: solid;
+    border-color: rgba(68, 237, 29, 0.902);
+    box-shadow: 0px 0px 40px rgb(138, 138, 138);
+  "
+>
+  <label for="lead_name" style="margin-top: 16px">Lead Name:</label>
+  <input
+    type="text"
+    id="lead_name"
+    name="lead_name"
+    required
+    style="text-align: center; border-radius: 10px; width: 50%"
+  /><br />
+  <p id="flash_msg_delete_lead">
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for
+    message in messages %} {{ message }} {% endfor %} {% endif %} {% endwith %}
+  </p>
+  <button type="submit" style="margin-bottom: 16px">Submit</button>
 </form>
-<p id="flash_msg_delete_lead">
-  {% with messages = get_flashed_messages() %} {% if messages %} {% for message
-  in messages %} {{ message }} {% endfor %} {% endif %} {% endwith %}
-</p>
 {% endblock %}

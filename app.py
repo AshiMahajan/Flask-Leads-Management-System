@@ -178,7 +178,8 @@ def all_leads():
 def all_leads_add():
     if request.method == "POST":
         lead_name = request.form.get("lead_name")
-        service = request.form.get("service")
+        services = request.form.getlist("service")
+        service = ", ".join(services)
         phone_number = request.form.get("phone_number")
         query = request.form.get("query")
         contact = Users(
@@ -206,9 +207,12 @@ def all_leads_update():
         else:
             user = db.session.query(Users).filter_by(phone_number=phone_number).first()
             if user:
-                user.service = service
-                user.query = query
-                user.status = status
+                if service:
+                    user.service = service
+                if query:
+                    user.query = query
+                if status:
+                    user.status = status
                 db.session.commit()
                 flash("User updated successfully.", "success")
                 return redirect(url_for("all_leads"))
@@ -230,7 +234,7 @@ def all_leads_delete():
             if user:
                 db.session.delete(user)
                 db.session.commit()
-                flash("User deleted successfully.", "success")
+                # flash("User deleted successfully.", "success")
                 return redirect(url_for("all_leads"))
             else:
                 flash("No user found with that lead name.", "error")

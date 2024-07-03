@@ -1,13 +1,23 @@
 {% extends "manager.html" %} {% block title %}Management{% endblock %}
     
 {% block content %}
-<form action="/manager/all_leads/update" method="post" class="flex flex-col w-3/4 items-center self-center h-full" style="
+{% block form%}
+<form action="/manager/all_leads/update" method="post" class="flex flex-col w-3/4 items-center self-center h-full" style="width: 40%;
 align-self: center;
-">
-    <label for="phone_number">Enter Lead's Phone Number</label>
-    <input type="text" id="phone_number" placeholder="10-digit number." style="
-    text-align: center;
-" name="phone_number" />
+background-color: rgba(110, 141, 132, 0.507);
+margin-left: 10rem;
+border-radius: 24px;
+box-sizing: border-box;
+border: solid;
+border-color: rgba(68, 237, 29, 0.902);
+box-shadow: 0px 0px 40px rgb(138, 138, 138);
+gap: 10px;">
+{%endblock%}
+{% block name %}
+{% endblock %}
+    <label for="phone_number" style="margin-top: 16px;">Enter Lead's Phone Number</label>
+    <input type="text" id="phone_number" placeholder="10-digit number." style="text-align: center;border-radius: 10px;width: 50%;"
+    name="phone_number" />
 {% with messages = get_flashed_messages() %}
 {% if messages %}
   {% for message in messages %}
@@ -42,9 +52,9 @@ align-self: center;
     <label for="query" style="
     margin-top: 16px;
 ">Query:</label>
-    <input type="text" id="query" placeholder="Query." style="
-    text-align: center;
-" name="query" /><br />
+    <input type="text" id="query" placeholder="Query." style="text-align: center;border-radius: 10px;width: 50%;"
+    name="query" /><br />
+    {% block status %}
     <label for="status" style="
     margin-bottom: 16px;
 ">Status:</label>
@@ -68,8 +78,9 @@ align-self: center;
         <input type="radio" id="status6" name="status" value="declined" />
         <label for="service6">Declined</label>
       </div>
+      {% endblock %}
     <button type="submit" style="
-    margin-top: 16px;
+    margin-top: 16px; margin-bottom: 16px;
 ">Submit</button>
 </form>
 {%endblock%}

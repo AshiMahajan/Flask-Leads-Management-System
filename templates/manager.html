@@ -16,6 +16,13 @@
           type="submit"
           onclick="window.location.href='/login/manager'"
           class="text-white"
+          style="
+            background-color: #ef9f09;
+            width: 120%;
+            margin-left: -40px;
+            font-size: 20px;
+            border-radius: 3px;
+          "
         >
           Dashboard
         </button>
@@ -23,8 +30,28 @@
           type="submit"
           onclick="window.location.href='/manager/all_leads'"
           class="text-white"
+          style="
+            background-color: #ef9f09;
+            width: 120%;
+            border-radius: 3px;
+            margin-left: -40px;
+            font-size: 20px;
+          "
         >
           All
+        </button>
+        <button
+          type="button"
+          onclick="window.location.href='/logout'"
+          style="
+            background-color: darkgray;
+            border-radius: 3px;
+            width: 120%;
+            margin-left: -40px;
+            font-size: 20px;
+          "
+        >
+          Logout
         </button>
       </div>
       {% block content %}
@@ -34,9 +61,6 @@
         <span class="text-xl">Declined Leads: {{ declined_leads }}</span>
       </div>
       {% endblock %}
-      <button type="button" onclick="window.location.href='/logout'">
-        Logout
-      </button>
     </div>
   </body>
 </html>
