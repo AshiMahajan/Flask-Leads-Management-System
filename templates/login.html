@@ -1,28 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="{{url_for('static',filename='css/output.css')}}"
-      rel="stylesheet"
-    />
-    <title>{% block title %}Signup{% endblock %}</title>
-  </head>
-  <body class="bg-red-700">
-    {% block content %}
-    <form action="/login" method="post" class="login_form">
-      <label for="email">Email:</label>
-      <input type="text" id="email" name="email" required /><br />
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required /><br />
-      <button type="submit">Login</button>
-      <p id="flash_msg_login">
-        {% with messages = get_flashed_messages() %} {% if messages %} {% for
-        message in messages %} {{ message }} {% endfor %} {% endif %} {% endwith
-        %}
-      </p>
-    </form>
-    {% endblock %}
-  </body>
-</html>
+{% extends "signup.html" %} {% block title %}Login{% endblock %} {% block
+content %}
+<form
+  action="/login"
+  method="post"
+  class="flex flex-col w-5/12 mr-12 items-center text-2xl bg-white rounded-xl font-bold text-gray-700"
+  style="height: 40%; width: 33%; margin-right: 13%"
+>
+  <label
+    for="email"
+    style="margin-top: 10%; display: flex; flex-direction: column"
+    >Email:</label
+  >
+  <input type="text" id="email" name="email" required /><br />
+  <label for="password">Password:</label>
+  <input type="password" id="password" name="password" required /><br />
+  <button type="submit">Login</button>
+  <p id="flash_msg_login">
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for
+    message in messages %} {{ message }} {% endfor %} {% endif %} {% endwith %}
+  </p>
+</form>
+{% endblock %}

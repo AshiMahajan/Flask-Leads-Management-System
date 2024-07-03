@@ -49,17 +49,87 @@
             width: 120%;
             margin-left: -40px;
             font-size: 20px;
+            margin-top: 500px;
           "
         >
           Logout
         </button>
       </div>
       {% block content %}
-      <div class="w-3/4 flex flex-col justify-center items-center">
-        <span class="text-xl">Total Leads: {{ total_users }}</span>
-        <span class="text-xl">Converted Leads: {{ converted_leads }}</span>
-        <span class="text-xl">Declined Leads: {{ declined_leads }}</span>
-      </div>
+      <!-- <div
+        class="w-3/4 flex flex-col justify-center items-start"
+        style="gap: 15px"
+      >
+        <span class="text-xl" style="align-self: baseline; margin-left: 165px"
+          >Total Leads
+          <span style="margin-left: 150px">{{ total_users }}</span></span
+        >
+        <span class="text-xl" style="align-self: baseline; margin-left: 165px"
+          >Pending Leads
+          <span style="margin-left: 150px">{{ pending_leads }}</span></span
+        >
+        <span class="text-xl" style="align-self: baseline; margin-left: 165px"
+          >Call Done
+          <span style="margin-left: 150px">{{ call_done_leads }}</span></span
+        >
+        <span class="text-xl" style="align-self: baseline; margin-left: 165px"
+          >Waiting Leads
+          <span style="margin-left: 150px">{{ waiting_leads }}</span></span
+        >
+        <span class="text-xl" style="align-self: baseline; margin-left: 165px"
+          >Scheduled Leads
+          <span style="margin-left: 150px">{{ scheduled_leads }}</span></span
+        >
+        <span class="text-xl" style="align-self: baseline; margin-left: 165px"
+          >Converted Leads
+          <span style="margin-left: 150px">{{ converted_leads }}</span></span
+        >
+        <span class="text-xl" style="align-self: baseline; margin-left: 165px"
+          >Declined Leads
+          <span style="margin-left: 150px">{{ declined_leads }}</span></span
+        >
+      </div> -->
+      <table
+        style="
+          box-sizing: border-box;
+          height: 54%;
+          font-size: 20px;
+          margin-left: 20%;
+          width: 30%;
+          margin-top: 12%;
+          font-style: italic;
+          font-variant: petite-caps;
+        "
+      >
+        <tr>
+          <td>Total Leads</td>
+          <td>{{ total_users }}</td>
+        </tr>
+        <tr>
+          <td>Pending Leads</td>
+          <td>{{ pending_leads }}</td>
+        </tr>
+        <tr>
+          <td>Call Done</td>
+          <td>{{ call_done_leads }}</td>
+        </tr>
+        <tr>
+          <td>Waiting Leads</td>
+          <td>{{ waiting_leads }}</td>
+        </tr>
+        <tr>
+          <td>Scheduled Leads</td>
+          <td>{{ scheduled_leads }}</td>
+        </tr>
+        <tr>
+          <td>Converted Leads</td>
+          <td>{{ converted_leads }}</td>
+        </tr>
+        <tr>
+          <td>Declined Leads</td>
+          <td>{{ declined_leads }}</td>
+        </tr>
+      </table>
       {% endblock %}
     </div>
   </body>

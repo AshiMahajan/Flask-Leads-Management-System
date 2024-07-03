@@ -153,17 +153,31 @@ def contact_us():
     return render_template("contact_us.html")
 
 
+@app.route("/login/user", methods=["GET", "POST"])
+def login_user():
+    return render_template("login_user.html")
+
+
 @app.route("/login/manager", methods=["GET", "POST"])
 def login_manager():
     if session.get("user_option") == "manager":
-        # total_users = db.session.query(func.count(Users.id)).scalar()
-        # converted_leads = Users.query.filter_by(status="converted").count()
-        # declined_leads = Users.query.filter_by(status="declined").count()
+        total_users = db.session.query(func.count(Users.id)).scalar()
+        pending_leads = db.session.query(Users).filter_by(status="pending").count()
+        call_done_leads = db.session.query(Users).filter_by(status="call done").count()
+        waiting_leads = db.session.query(Users).filter_by(status="waiting").count()
+        scheduled_leads = db.session.query(Users).filter_by(status="scheduled").count()
+        converted_leads = db.session.query(Users).filter_by(status="converted").count()
+        declined_leads = db.session.query(Users).filter_by(status="declined").count()
+
         return render_template(
             "manager.html",
-            # total_users=total_users,
-            # converted_leads=converted_leads,
-            # declined_leads=declined_leads,
+            total_users=total_users,
+            pending_leads=pending_leads,
+            call_done_leads=call_done_leads,
+            waiting_leads=waiting_leads,
+            scheduled_leads=scheduled_leads,
+            converted_leads=converted_leads,
+            declined_leads=declined_leads,
         )
     flash("Access denied. Managers only.", "error")
     return redirect(url_for("login"))
