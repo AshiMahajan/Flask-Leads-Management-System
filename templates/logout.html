@@ -1,6 +1,3 @@
-{% extends "base.html" %} {% block title %}Logout{% endblock %} {% block content
-%} {% endblock %}
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -10,8 +7,7 @@
       href="{{url_for('static',filename='css/output.css')}}"
       rel="stylesheet"
     />
-
-    <title>{% block title %}Logout{% endblock %}</title>
+    {% block title %}Logout{% endblock %}
   </head>
   <body>
     <div>

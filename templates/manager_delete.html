@@ -1,0 +1,12 @@
+{% extends "manager.html" %} {% block title %}Delete Lead{% endblock %} {% block
+content %}
+<form action="{{ url_for('all_leads_delete') }}" method="post">
+  <label for="lead_name">Lead Name:</label>
+  <input type="text" id="lead_name" name="lead_name" required /><br />
+  <button type="submit">Submit</button>
+</form>
+<p id="flash_msg_delete_lead">
+  {% with messages = get_flashed_messages() %} {% if messages %} {% for message
+  in messages %} {{ message }} {% endfor %} {% endif %} {% endwith %}
+</p>
+{% endblock %}

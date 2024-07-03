@@ -3,30 +3,70 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Include Tailwind CSS -->
     <link
-      href="{{ url_for('static', filename='css/output.css') }}"
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
     />
     <title>{% block title %}Contact Us{% endblock %}</title>
+    <style>
+      .bg-ima {
+        background-image: url("static/css/image.png");
+        background-size: cover;
+        background-position: center;
+      }
+    </style>
   </head>
-  <body class="bg-red-700">
-    {% block content %}
-    <form action="{{ url_for('contact_us') }}" method="post" class="contact_us">
-      <label for="lead_name">Lead Name:</label>
-      <input type="text" id="lead_name" name="lead_name" required /><br />
-      <label for="service">Service:</label>
-      <input type="text" id="service" name="service" required /><br />
-      <label for="phone">Phone Number:</label>
-      <input type="text" id="phone" name="phone_number" required /><br />
-      <label for="query">Query:</label>
-      <textarea id="query" name="query" required></textarea><br />
-      <p id="flash_msg_contact_us">
-        {% with messages = get_flashed_messages() %} {% if messages %} {% for
-        message in messages %} {{ message }} {% endfor %} {% endif %} {% endwith
-        %}
-      </p>
-      <button type="submit">Submit</button>
-    </form>
-    {% endblock %}
+
+  <body class="h-screen bg-ima">
+    <div class="flex h-screen justify-between items-center">
+      <!-- Left side text -->
+      <div class="text-white font-bold p-4 rounded ml-12">
+        <h1 class="text-5xl ml-28">Timeless Glow Ups</h1>
+      </div>
+      {% block content %}
+      <form
+        action="{{ url_for('contact_us') }}"
+        method="post"
+        class="flex flex-col w-5/12 mr-12 items-center text-2xl bg-white rounded-xl font-bold"
+      >
+        <label for="lead_name" class="mt-24" aria-placeholder="Your Name"
+          >Lead Name:</label
+        >
+        <input type="text" id="lead_name" name="lead_name" required /><br />
+        <label for="service" class="mb-4">Service:</label>
+        <div class="text-base font-medium classtable-row tracking-wide">
+          <input type="checkbox" id="service1" name="service" value="haircut" />
+          <label for="service1"> Haircut</label>
+          <input type="checkbox" id="service2" name="service" value="massage" />
+          <label for="service2"> Massage</label>
+          <input type="checkbox" id="service3" name="service" value="waxing" />
+          <label for="service3"> Waxing</label>
+          <br />
+          <input
+            type="checkbox"
+            id="service4"
+            name="service"
+            value="conditioning"
+          />
+          <label for="service4"> Conditioning</label>
+          <input type="checkbox" id="service5" name="service" value="styling" />
+          <label for="service5"> Styling</label>
+          <input type="checkbox" id="service6" name="service" value="tanning" />
+          <label for="service6"> Tanning</label>
+        </div>
+        <label for="phone" class="mt-4">Phone Number:</label>
+        <input type="text" id="phone" name="phone_number" required /><br />
+        <label for="query">Query:</label>
+        <textarea id="query" name="query" required></textarea><br />
+        <p id="flash_msg_contact_us">
+          {% with messages = get_flashed_messages() %} {% if messages %} {% for
+          message in messages %} {{ message }} {% endfor %} {% endif %} {%
+          endwith %}
+        </p>
+        <button type="submit" class="mb-24 font-bold">Submit</button>
+      </form>
+      {% endblock %}
+    </div>
   </body>
 </html>

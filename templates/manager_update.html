@@ -1,16 +1,76 @@
 {% extends "manager.html" %} {% block title %}Management{% endblock %}
     
 {% block content %}
-<form action="/manager/all_leads/update" method="post">
-    <label for="lead_name">Lead Name:</label>
-    <input type="text" id="lead_name" name="lead_name" required /><br />
-    <label for="service">Service:</label>
-    <input type="text" id="service" name="service" required /><br />
-    <label for="query">Query:</label>
-    <input type="text" id="query" name="query" required /><br />
-    <label for="status">status:</label>
-    <input type="text" id="status" name="status" required /><br />
-    <button type="submit">Submit</button>
+<form action="/manager/all_leads/update" method="post" class="flex flex-col w-3/4 items-center self-center h-full" style="
+align-self: center;
+">
+    <label for="phone_number">Enter Lead's Phone Number</label>
+    <input type="text" id="phone_number" placeholder="10-digit number." style="
+    text-align: center;
+" name="phone_number" />
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+  {% for message in messages %}
+    <p>{{ message }}</p>
+  {% endfor %}
+{% endif %}
+{% endwith %}
+<br />
+    <label for="service" style="
+    margin-bottom: 16px;
+">Service:</label>
+    <div class="text-base font-medium classtable-row tracking-wide">
+        <input type="checkbox" id="service1" name="service" value="haircut" />
+        <label for="service1"> Haircut</label>
+        <input type="checkbox" id="service2" name="service" value="massage" />
+        <label for="service2"> Massage</label>
+        <input type="checkbox" id="service3" name="service" value="waxing" />
+        <label for="service3"> Waxing</label>
+    <br />
+    <input
+            type="checkbox"
+            id="service4"
+            name="service"
+            value="conditioning"
+          />
+          <label for="service4"> Conditioning</label>
+          <input type="checkbox" id="service5" name="service" value="styling" />
+          <label for="service5"> Styling</label>
+          <input type="checkbox" id="service6" name="service" value="tanning" />
+          <label for="service6"> Tanning</label>
+    </div>
+    <label for="query" style="
+    margin-top: 16px;
+">Query:</label>
+    <input type="text" id="query" placeholder="Query." style="
+    text-align: center;
+" name="query" /><br />
+    <label for="status" style="
+    margin-bottom: 16px;
+">Status:</label>
+    <div class="text-base font-medium classtable-row tracking-wide">
+        <input type="radio" id="status1" name="status" value="pending" />
+        <label for="status1"> Pending</label>
+        <input type="radio" id="status2" name="status" value="call_done" />
+        <label for="status2"> Call Done</label>
+        <input type="radio" id="status3" name="status" value="waiting" />
+        <label for="status3"> Waiting</label>
+        <br />
+        <input
+          type="radio"
+          id="status4"
+          name="status"
+          value="scheduled"
+        />
+        <label for="status4">Scheduled</label>
+        <input type="radio" id="status5" name="status" value="converted" />
+        <label for="status5">Converted</label>
+        <input type="radio" id="status6" name="status" value="declined" />
+        <label for="service6">Declined</label>
+      </div>
+    <button type="submit" style="
+    margin-top: 16px;
+">Submit</button>
 </form>
 {%endblock%}
 </body>

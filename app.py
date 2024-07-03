@@ -33,31 +33,14 @@ class Employees(db.Model):
         self.option = option
 
 
-# class Managers(db.Model):
-#     __tablename__ = "managers"
-#     id = db.Column(db.Integer, primary_key=True)
-#     lead_name = db.Column(db.String, nullable=False)
-#     service = db.Column(db.String, nullable=False)
-#     phone_number = db.Column(db.String, unique=True, nullable=False)
-#     query = db.Column(db.String, nullable=False)
-#     field = db.Column(db.String, nullable=False)
-
-#     def __init__(self, lead_name, service, phone_number, query, field):
-#         self.lead_name = lead_name
-#         self.service = service
-#         self.phone_number = phone_number
-#         self.query = query
-#         self.field = field
-
-
 class Users(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     lead_name = db.Column(db.String, nullable=False)
     service = db.Column(db.String, nullable=False)
-    phone_number = db.Column(db.String, unique=True, nullable=False)
+    phone_number = db.Column(db.Integer, unique=True, nullable=False)
     query = db.Column(db.String, nullable=False)
-    status = db.Column(default="pending")
+    status = db.Column(db.String, default="pending")
 
     def __init__(self, lead_name, service, phone_number, query):
         self.lead_name = lead_name
@@ -88,7 +71,7 @@ def is_manager(email):
     return bool(user)
 
 
-@app.route("/home")
+@app.route("/")
 def hello_world():
     return render_template("home.html")
 
@@ -154,19 +137,19 @@ def login():
 def contact_us():
     if request.method == "POST":
         lead_name = request.form.get("lead_name")
-        service = request.form.get("service")
+        services = request.form.getlist("service")
+        service = ",".join(services)
         phone_number = request.form.get("phone_number")
         query = request.form.get("query")
 
-        contact = Users(
-            lead_name=lead_name, phone_number=phone_number, service=service, query=query
-        )
-        db.session.add(contact)
-        db.session.commit()
-
-        flash(Markup("Query submitted successfully!"), "success")
-        return redirect(url_for("contact_us"))
-
+        if not lead_name or not service or not phone_number or not query:
+            flash("Please fill out all fields.", "error")
+        else:
+            new_user = Users(lead_name, service, phone_number, query)
+            db.session.add(new_user)
+            db.session.commit()
+            flash("Form submitted!", "success")
+            return redirect(url_for("contact_us"))
     return render_template("contact_us.html")
 
 
@@ -212,21 +195,47 @@ def all_leads_add():
 @app.route("/manager/all_leads/update", methods=["GET", "POST"])
 def all_leads_update():
     if request.method == "POST":
-        lead_name = request.form.get("lead_name")
-        service = request.form.get("service")
+        phone_number = request.form.get("phone_number")
+        services = request.form.getlist("service")
+        service = ", ".join(services)
         query = request.form.get("query")
         status = request.form.get("status")
-        if not lead_name:
+        if not phone_number:
             flash("Enter phone number to proceed further.", "error")
+            return render_template("manager_update.html")
         else:
-            users = Users.query.filter_by(lead_name=lead_name).first()
-        if users:
-            users.service = service
-            users.query = query
-            users.status = status
-            db.session.commit()
-            return "Done"
+            user = db.session.query(Users).filter_by(phone_number=phone_number).first()
+            if user:
+                user.service = service
+                user.query = query
+                user.status = status
+                db.session.commit()
+                flash("User updated successfully.", "success")
+                return redirect(url_for("all_leads"))
+            else:
+                flash("No user found with that lead name.", "error")
+                return render_template("manager_update.html")
     return render_template("manager_update.html")
+
+
+@app.route("/manager/all_leads/delete", methods=["GET", "POST"])
+def all_leads_delete():
+    if request.method == "POST":
+        lead_name = request.form.get("lead_name")
+        if not lead_name:
+            flash("Please enter the lead name.", "error")
+            return render_template("manager_delete.html")
+        else:
+            user = db.session.query(Users).filter_by(lead_name=lead_name).first()
+            if user:
+                db.session.delete(user)
+                db.session.commit()
+                flash("User deleted successfully.", "success")
+                return redirect(url_for("all_leads"))
+            else:
+                flash("No user found with that lead name.", "error")
+                return render_template("manager_delete.html")
+    return render_template("manager_delete.html")
 
 
 @app.route("/logout")
