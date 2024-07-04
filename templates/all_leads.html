@@ -1,58 +1,57 @@
 {% extends "manager.html" %} {% block title %}Management{% endblock %}
     
 {% block content %}
+<style>
+  #buttons_for_dashboard{
+    opacity: 0.89;
+  }
+  #buttons_for_dashboard:hover{
+    opacity: 1;
+    font-style: oblique;
+  }
+</style>
 <div class="w-3/4 flex flex-col justify-center items-center h-full" style="gap: 40px;">
     <button
       id="buttons_for_dashboard"
       onclick="window.location.href='/manager/all_leads/add'"
-      style="background-color: rgba(19, 192, 19, 0.849);
+      style="background-color: rgba(31, 211, 31, 0.888);
       width: 15%;
       font-size: 20px;
-      border-radius: 10px;
-      font-style: oblique;"
+      border-radius: 10px;"
     >
-      <!-- <img
-        src="/static/add.png"
-        alt="add"
-        id="image_dashboard"
-        style="width: 200%; cursor: pointer"
-      /> -->
       Add
     </button>
     <button
       id="buttons_for_dashboard"
       onclick="window.location.href='/manager/all_leads/update'"
-      style="background-color: rgba(207, 183, 23, 0.849);
+      style="background-color: rgba(222, 197, 34, 0.897);
       width: 15%;
       font-size: 20px;
-      border-radius: 10px;
-      font-style: oblique;"
+      border-radius: 10px;"
     >
-      <!-- <img
-        src="/static/update.png"
-        alt="update"
-        id="image_dashboard"
-        style="width: 200%; cursor: pointer"
-      /> -->
     Update
     </button>
     <button
       id="buttons_for_dashboard"
       onclick="window.location.href='/manager/all_leads/delete'"
-      style="background-color: rgba(221, 35, 35, 0.849);
+      style="background-color: rgba(234, 40, 40, 0.884);
       width: 15%;
       font-size: 20px;
-      border-radius: 10px;
-      font-style: oblique;"
+      border-radius: 10px;"
     >
-      <!-- <img
-        src="/static/delete.png"
-        alt="delete"
-        id="image_dashboard"
-        style="width: 200%; cursor: pointer"
-      /> -->
       Delete
     </button>
+    <div style="font-size: 19px;
+    line-height: 1.25rem;
+    color: rgb(89 255 0);
+    font-weight: 800;
+    letter-spacing: 1px;
+    word-spacing: 5px;
+    font-variant: all-petite-caps;
+    text-decoration: underline;">
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for
+      message in messages %} {{ message }} {% endfor %} {% endif %} {% endwith %}
+    </div>
     {%endblock%}
 </body>
 </html>

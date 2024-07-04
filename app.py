@@ -98,7 +98,7 @@ def signup():
         elif save_user(username, email, password, option):
             flash(
                 Markup(
-                    'Account created! <a href="/login" class="alert-link">Login</a> now'
+                    'Account created! <a href="/login" style="color:green">Login</a> now'
                 ),
                 "success",
             )
@@ -132,7 +132,7 @@ def login():
         else:
             flash(
                 Markup(
-                    'Email or password incorrect! <a href="/signup" class="alert-link"> Signup </a>instead'
+                    'Email or password incorrect! <a href="/signup" style="color:green"> Signup </a>instead'
                 ),
                 "success",
             )
@@ -144,17 +144,23 @@ def contact_us():
     if request.method == "POST":
         lead_name = request.form.get("lead_name")
         services = request.form.getlist("service")
-        service = ",".join(services)
+        service = ", ".join(services)
         phone_number = request.form.get("phone_number")
         query = request.form.get("query")
 
         if not lead_name or not service or not phone_number or not query:
             flash("Please fill out all fields.", "error")
+        if len(phone_number) != 10:
+            flash("Please enter the correct phone number.", "error")
         else:
             new_user = Users(lead_name, service, phone_number, query)
             db.session.add(new_user)
             db.session.commit()
-            flash("Form submitted!", "success")
+            flash(
+                Markup("<h1 style= 'color: green'>Form submitted!</h1>"),
+                "success",
+            )
+            # flash("Form submitted!", "success")
             return redirect(url_for("contact_us"))
     return render_template("contact_us.html")
 
@@ -174,7 +180,7 @@ def login_manager():
     if session.get("user_option") == "manager":
         total_users = db.session.query(func.count(Users.id)).scalar()
         pending_leads = db.session.query(Users).filter_by(status="pending").count()
-        call_done_leads = db.session.query(Users).filter_by(status="call done").count()
+        call_done_leads = db.session.query(Users).filter_by(status="call_done").count()
         waiting_leads = db.session.query(Users).filter_by(status="waiting").count()
         scheduled_leads = db.session.query(Users).filter_by(status="scheduled").count()
         converted_leads = db.session.query(Users).filter_by(status="converted").count()
@@ -207,14 +213,30 @@ def all_leads_add():
         service = ", ".join(services)
         phone_number = request.form.get("phone_number")
         query = request.form.get("query")
-        contact = Users(
-            lead_name=lead_name,
-            service=service,
-            phone_number=phone_number,
-            query=query,
-        )
-        db.session.add(contact)
-        db.session.commit()
+        if (
+            len(phone_number) != 10
+            or service == ""
+            or len(query) < 5
+            or len(query) > 50
+        ):
+            flash("Enter correct phone number to proceed.")
+        if db.session.query(Users).filter_by(phone_number=phone_number).first():
+            flash("Lead with this phone number already exists.")
+        else:
+            try:
+                contact = Users(
+                    lead_name=lead_name,
+                    service=service,
+                    phone_number=phone_number,
+                    query=query,
+                )
+                db.session.add(contact)
+                db.session.commit()
+                flash("User added successfully.")
+                return redirect(url_for("all_leads"))
+            except:
+                db.session.rollback()
+                return render_template("manager_add.html")
     return render_template("manager_add.html")
 
 
@@ -227,7 +249,10 @@ def all_leads_update():
         query = request.form.get("query")
         status = request.form.get("status")
         if not phone_number:
-            flash("Enter phone number to proceed further.", "error")
+            flash("Enter ID to proceed further.", "error")
+            return render_template("manager_update.html")
+        if not service and not status and not query:
+            flash("Enter atleast one field to proceed further.", "error")
             return render_template("manager_update.html")
         else:
             user = db.session.query(Users).filter_by(phone_number=phone_number).first()
@@ -242,7 +267,7 @@ def all_leads_update():
                 flash("User updated successfully.", "success")
                 return redirect(url_for("all_leads"))
             else:
-                flash("No user found with that lead name.", "error")
+                flash("No user found with that lead's phone number.", "error")
                 return render_template("manager_update.html")
     return render_template("manager_update.html")
 
@@ -250,19 +275,19 @@ def all_leads_update():
 @app.route("/manager/all_leads/delete", methods=["GET", "POST"])
 def all_leads_delete():
     if request.method == "POST":
-        lead_name = request.form.get("lead_name")
-        if not lead_name:
-            flash("Please enter the lead name.", "error")
+        id = request.form.get("id")
+        if not id:
+            flash("Please enter the lead's ID.", "error")
             return render_template("manager_delete.html")
         else:
-            user = db.session.query(Users).filter_by(lead_name=lead_name).first()
+            user = db.session.query(Users).filter_by(id=id).first()
             if user:
                 db.session.delete(user)
                 db.session.commit()
-                # flash("User deleted successfully.", "success")
+                flash("User deleted successfully.")
                 return redirect(url_for("all_leads"))
             else:
-                flash("No user found with that lead name.", "error")
+                flash("No user found with that lead ID.", "error")
                 return render_template("manager_delete.html")
     return render_template("manager_delete.html")
 

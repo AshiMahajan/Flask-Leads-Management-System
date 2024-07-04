@@ -3,18 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="{{url_for('static',filename='css/output.css')}}"
-      rel="stylesheet"
-    />
-    {% block title %}Logout{% endblock %}
+    <title>Logout</title>
+    <style>
+      body {
+        background-color: rgb(91, 91, 91);
+      }
+    </style>
   </head>
-  <body>
-    <div>
-      <h1>Logout Successful!</h1>
-      {% block button%}
-      <button id="home_button" onclick="window.location.href='/'">Home</button>
-      {% endblock %}
+  <body class="h-screen bg-ima">
+    <div
+      class="flex flex-col"
+      style="height: 100%; width: 100%; text-align: center; margin-top: 20%"
+    >
+      <p style="font-size: 35px; color: antiquewhite">Success</p>
+      <button
+        class="transform transition duration-500 hover:scale-110"
+        style="
+          margin-top: 10%;
+          width: 10%;
+          background-color: cornflowerblue;
+          font-size: 20px;
+          padding: 7px;
+          cursor: pointer;
+        "
+        id="home_button"
+        onclick="window.location.href='/'"
+      >
+        Home
+      </button>
     </div>
   </body>
 </html>

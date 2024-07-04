@@ -11,7 +11,8 @@
     <title>{% block title %}Contact Us{% endblock %}</title>
     <style>
       .bg-ima {
-        background-image: url("static/css/image.png");
+        /* background-image: url("static/css/image.png"); */
+        background-image: url("static/css/bg_image.png");
         background-size: cover;
         background-position: center;
       }
@@ -22,49 +23,126 @@
     <div class="flex h-screen justify-between items-center">
       <!-- Left side text -->
       <div class="text-white font-bold p-4 rounded ml-12">
-        <h1 class="text-5xl ml-28">Timeless Glow Ups</h1>
+        <h1 class="text-5xl ml-28 italic">Timeless Glow Ups</h1>
       </div>
       {% block content %}
       <form
         action="{{ url_for('contact_us') }}"
         method="post"
-        class="flex flex-col w-5/12 mr-12 items-center text-2xl bg-white rounded-xl font-bold"
+        class="flex flex-col w-5/12 mr-12 items-center text-2xl bg-white rounded-xl font-bold text-gray-700"
       >
-        <label for="lead_name" class="mt-24" aria-placeholder="Your Name"
-          >Lead Name:</label
-        >
-        <input type="text" id="lead_name" name="lead_name" required /><br />
+        <label for="lead_name" class="mt-12">Lead Name:</label>
+        <input
+          class="text-center placeholder-gray-500 border border-gray-400"
+          style="
+            border-radius: 3px;
+            font-size: 15px;
+            width: 65%;
+            height: 25px;
+            margin-top: 15px;
+          "
+          type="text"
+          id="lead_name"
+          placeholder="Your Name here..."
+          name="lead_name"
+          required
+        /><br />
         <label for="phone" class="mb-4">Phone Number:</label>
-        <input type="text" id="phone" name="phone_number" required /><br />
+        <input
+          class="text-center placeholder-gray-500 border border-gray-400"
+          style="border-radius: 3px; font-size: 15px; width: 65%; height: 25px"
+          type="text"
+          id="phone"
+          name="phone_number"
+          placeholder="Your 10 digit mobile number goes here..."
+          required
+        /><br />
         <label for="service">Service:</label>
-        <div class="text-base font-medium classtable-row tracking-wide mt-4">
-          <input type="checkbox" id="service1" name="service" value="haircut" />
-          <label for="service1"> Haircut</label>
-          <input type="checkbox" id="service2" name="service" value="massage" />
-          <label for="service2"> Massage</label>
-          <input type="checkbox" id="service3" name="service" value="waxing" />
-          <label for="service3"> Waxing</label>
+        <div
+          class="text-base font-medium classtable-row tracking-wide mt-4"
+          style="text-align: center; width: 100%"
+        >
+          <label for="service1" style="width: 25%; display: inline-flex">
+            <input
+              type="checkbox"
+              id="service1"
+              name="service"
+              value="haircut"
+            />Haircut
+          </label>
+          <label for="service2" style="width: 25%; display: inline-flex"
+            ><input
+              type="checkbox"
+              id="service2"
+              name="service"
+              value="massage"
+            />
+            Massage</label
+          >
+          <label for="service3" style="width: 12%; display: inline-flex"
+            ><input
+              type="checkbox"
+              id="service3"
+              name="service"
+              value="waxing"
+            />
+            Waxing</label
+          >
           <br />
-          <input
-            type="checkbox"
-            id="service4"
-            name="service"
-            value="conditioning"
-          />
-          <label for="service4"> Conditioning</label>
-          <input type="checkbox" id="service5" name="service" value="styling" />
-          <label for="service5"> Styling</label>
-          <input type="checkbox" id="service6" name="service" value="tanning" />
-          <label for="service6"> Tanning</label>
+
+          <label for="service4" style="width: 25%; display: inline-flex"
+            ><input
+              type="checkbox"
+              id="service4"
+              name="service"
+              value="conditioning"
+            />
+            Conditioning</label
+          >
+          <label for="service5" style="width: 25%; display: inline-flex"
+            ><input
+              type="checkbox"
+              id="service5"
+              name="service"
+              value="styling"
+            />
+            Styling</label
+          >
+          <label for="service6" style="width: 12%; display: inline-flex">
+            <input
+              type="checkbox"
+              id="service6"
+              name="service"
+              value="tanning"
+            />
+            Tanning</label
+          >
         </div>
         <label for="query" class="mt-4">Query:</label>
-        <textarea id="query" name="query" required></textarea><br />
-        <p id="flash_msg_contact_us">
+        <textarea
+          class="text-center placeholder-gray-500 border border-gray-400"
+          style="
+            border-radius: 3px;
+            font-size: 15px;
+            width: 65%;
+            height: 25px;
+            margin-top: 15px;
+          "
+          id="query"
+          name="query"
+          placeholder="Raise your query here (keep it short)..."
+          required
+        ></textarea
+        ><br />
+        <p
+          class="text-red-500"
+          style="margin-bottom: 15px; font-size: 16px; font-weight: 700"
+        >
           {% with messages = get_flashed_messages() %} {% if messages %} {% for
           message in messages %} {{ message }} {% endfor %} {% endif %} {%
           endwith %}
         </p>
-        <button type="submit" class="mb-24 font-bold">Submit</button>
+        <button type="submit" class="mb-12 font-bold">Submit</button>
       </form>
       {% endblock %}
     </div>

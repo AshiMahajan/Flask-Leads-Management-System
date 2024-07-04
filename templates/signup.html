@@ -4,33 +4,83 @@ content %}
   action="/signup"
   method="post"
   class="flex flex-col w-5/12 mr-12 items-center text-2xl bg-white rounded-xl font-bold text-gray-700"
-  style="height: 65%; width: 33%; margin-right: 13%"
+  style="height: auto; width: 33%; margin-right: 13%"
 >
   <label
     for="username"
     style="margin-top: 10%; display: flex; flex-direction: column"
     >Username:</label
   >
-  <input type="text" id="username" name="username" required /><br />
+  <input
+    type="text"
+    id="username"
+    name="username"
+    required
+    class="text-center placeholder-gray-500 border border-gray-400"
+    style="
+      margin-top: 15px;
+      border-radius: 3px;
+      font-size: 15px;
+      width: 65%;
+      height: 25px;
+    "
+    placeholder="Your username here..."
+  /><br />
   <label for="email">Email:</label>
-  <input type="email" id="email" name="email" required /><br />
+  <input
+    type="email"
+    id="email"
+    name="email"
+    required
+    class="text-center placeholder-gray-500 border border-gray-400"
+    style="
+      margin-top: 15px;
+      border-radius: 3px;
+      font-size: 15px;
+      width: 65%;
+      height: 25px;
+    "
+    placeholder="abc@xyz.com"
+  /><br />
   <label for="password">Password:</label>
-  <input type="password" id="password" name="password" required /><br />
-  <p id="flash_msg_signup">
-    {% with messages = get_flashed_messages() %} {% if messages %} {% for
-    message in messages %} {{ message }} {% endfor %} {% endif %} {% endwith %}
-  </p>
+  <input
+    type="password"
+    id="password"
+    name="password"
+    required
+    class="text-center placeholder-gray-500 border border-gray-400"
+    style="
+      margin-top: 15px;
+      border-radius: 3px;
+      font-size: 15px;
+      width: 65%;
+      height: 25px;
+    "
+    placeholder="********"
+  /><br />
   <label for="email">Define your role:</label>
-  <div id="input_role" style="margin-top: 2%; font-size: 15px">
-    <input type="radio" name="options" id="option1" value="admin" required />
-    Admin
+  <div
+    style="
+      margin-top: 2%;
+      font-size: 15px;
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+    "
+  >
     <input type="radio" name="options" id="option2" value="user" required />
     User
+    <input type="radio" name="options" id="option1" value="admin" required />
+    Admin
     <input type="radio" name="options" id="option3" value="manager" required />
     Manager
   </div>
+  <p class="text-red-600 text-sm mt-4 mb-4">
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for
+    message in messages %} {{ message }} {% endfor %} {% endif %} {% endwith %}
+  </p>
   {% block button %}
-  <button type="submit" style="margin-top: 10px">Signup</button>
+  <button type="submit" style="margin-bottom: 10%">Signup</button>
   {% endblock %}
 </form>
 {% endblock %}

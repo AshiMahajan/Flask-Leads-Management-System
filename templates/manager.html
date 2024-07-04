@@ -7,12 +7,36 @@
       href="{{ url_for('static', filename='css/output.css') }}"
       rel="stylesheet"
     />
+    <style>
+      #dashboard_button,
+      #all_button {
+        opacity: 0.8;
+        font-variant-caps: all-petite-caps;
+      }
+      #dashboard_button:hover,
+      #all_button:hover {
+        opacity: 1;
+        font-variant: small-caps;
+      }
+      #logout {
+        opacity: 0.8;
+        transition: transform 1s;
+      }
+      #logout_button:hover {
+        opacity: 1;
+        transform: scale(1.12);
+      }
+    </style>
     <title>{% block title %}Manager{% endblock %}</title>
   </head>
   <body>
     <div class="flex h-screen">
-      <div class="w-1/4 bg-blue-500 items-stretch p-20 flex flex-col space-y-4">
+      <div
+        class="w-1/4 items-stretch p-20 flex flex-col space-y-4"
+        style="background-image: linear-gradient(46deg, #0d00ff, #a53131)"
+      >
         <button
+          id="dashboard_button"
           type="submit"
           onclick="window.location.href='/login/manager'"
           class="text-white"
@@ -28,6 +52,7 @@
         </button>
         <button
           type="submit"
+          id="all_button"
           onclick="window.location.href='/manager/all_leads'"
           class="text-white"
           style="
@@ -41,12 +66,14 @@
           All
         </button>
         <button
+          id="logout_button"
           type="button"
           onclick="window.location.href='/logout'"
           style="
             background-color: darkgray;
             border-radius: 3px;
             width: 120%;
+            font-variant: all-petite-caps;
             margin-left: -40px;
             font-size: 20px;
             margin-top: 500px;
@@ -56,39 +83,6 @@
         </button>
       </div>
       {% block content %}
-      <!-- <div
-        class="w-3/4 flex flex-col justify-center items-start"
-        style="gap: 15px"
-      >
-        <span class="text-xl" style="align-self: baseline; margin-left: 165px"
-          >Total Leads
-          <span style="margin-left: 150px">{{ total_users }}</span></span
-        >
-        <span class="text-xl" style="align-self: baseline; margin-left: 165px"
-          >Pending Leads
-          <span style="margin-left: 150px">{{ pending_leads }}</span></span
-        >
-        <span class="text-xl" style="align-self: baseline; margin-left: 165px"
-          >Call Done
-          <span style="margin-left: 150px">{{ call_done_leads }}</span></span
-        >
-        <span class="text-xl" style="align-self: baseline; margin-left: 165px"
-          >Waiting Leads
-          <span style="margin-left: 150px">{{ waiting_leads }}</span></span
-        >
-        <span class="text-xl" style="align-self: baseline; margin-left: 165px"
-          >Scheduled Leads
-          <span style="margin-left: 150px">{{ scheduled_leads }}</span></span
-        >
-        <span class="text-xl" style="align-self: baseline; margin-left: 165px"
-          >Converted Leads
-          <span style="margin-left: 150px">{{ converted_leads }}</span></span
-        >
-        <span class="text-xl" style="align-self: baseline; margin-left: 165px"
-          >Declined Leads
-          <span style="margin-left: 150px">{{ declined_leads }}</span></span
-        >
-      </div> -->
       <table
         style="
           box-sizing: border-box;

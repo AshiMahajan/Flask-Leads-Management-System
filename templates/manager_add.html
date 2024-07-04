@@ -1,24 +1,40 @@
 {% extends "manager_update.html" %} {% block title %}Management{% endblock %} {%
 block form%}
+<style>
+  #form_hover_add:hover {
+    box-shadow: 0px 0px 20px rgb(138, 138, 138);
+  }
+  #update_submit {
+    opacity: 0.8;
+    transition: transform 1s;
+  }
+  #update_submit:hover {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+</style>
 <form
   action="/manager/all_leads/add"
   method="post"
-  class="flex flex-col items-center h-full w-5/12 text-xl;"
+  id="form_hover_add"
+  class="flex flex-col items-center h-auto w-5/12;"
   style="
+    font-size: 1.25rem;
+    line-height: 1.75rem;
     width: 40%;
     align-self: center;
     background-color: rgba(110, 141, 132, 0.507);
     margin-left: 10rem;
     border-radius: 24px;
     box-sizing: border-box;
+    color: rgb(55 65 81);
     border: solid;
-    border-color: rgba(68, 237, 29, 0.902);
-    box-shadow: 0px 0px 40px rgb(138, 138, 138);
+    border-color: rgba(43, 43, 43, 0.664);
   "
 >
   {%endblock%} {% block name %}<label
     for="lead_name"
-    style="margin-top: 16px"
+    style="margin-top: 10%"
     class="mt-24"
     >Enter Lead's name</label
   >
@@ -27,7 +43,15 @@ block form%}
     id="lead_name"
     name="lead_name"
     placeholder="Type in here..."
-    style="text-align: center; border-radius: 10px; width: 50%"
+    style="
+      border-radius: 3px;
+      font-size: 15px;
+      width: 65%;
+      height: 25px;
+      margin-top: 15px;
+      text-align: center;
+      margin-bottom: -35px;
+    "
     required
   /><br />
   {% endblock %} {% block status%}{%endblock%}

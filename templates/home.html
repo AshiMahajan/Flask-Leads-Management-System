@@ -11,18 +11,19 @@
     <title>{% block title %}Home{% endblock %}</title>
     <style>
       .bg-ima {
-        background-image: url("static/css/image.png");
+        /* background-image: url("static/css/image.png"); */
+        background-image: url("static/css/bg_image.png");
         background-size: cover;
         background-position: center;
       }
     </style>
   </head>
-
+  {% block body %}
   <body class="h-screen bg-ima">
     <div class="flex h-screen justify-between items-center">
       <!-- Left side text -->
       <div class="text-white font-bold p-4 rounded ml-12">
-        <h1 class="text-5xl ml-28">Timeless Glow Ups</h1>
+        <h1 class="text-5xl ml-28 italic">Timeless Glow Ups</h1>
       </div>
       <!-- Right side buttons -->
       <div
@@ -49,4 +50,5 @@
       </div>
     </div>
   </body>
+  {% endblock %}
 </html>

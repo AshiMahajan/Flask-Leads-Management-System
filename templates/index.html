@@ -8,12 +8,9 @@
       href="{{url_for('static',filename='css/output.css')}}"
       rel="stylesheet"
     />
-
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
-    <!-- <body class="bg-red-700">
-    <div class="bg-red-600">background is red</div> -->
     {% block content %}{% endblock %}
   </body>
 </html>
