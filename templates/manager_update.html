@@ -30,8 +30,9 @@ gap: 10px;">
 {%endblock%}
 {% block name %}
 {% endblock %}
-    <label for="phone_number" style="margin-top: 10%;">Enter Lead's Phone Number</label>
-    <input type="text" id="phone_number" placeholder="..." style="
+{% block lead %}
+    <label for="id" style="margin-top: 10%;">Enter Lead's ID</label>
+    <input type="text" id="id" placeholder="..." style="
     border-radius: 3px;
     font-size: 15px;
     width: 65%;
@@ -39,8 +40,9 @@ gap: 10px;">
     margin-top: 15px;
     text-align: center;
 "
-    name="phone_number" />
+    name="id" />
 <br />
+{% endblock %}
     <label for="service" style="
     margin-bottom: 16px;
 ">Service:</label>
@@ -174,11 +176,6 @@ gap: 10px;">
     width: 20%;
     font-size: 18px;
     color: cornsilk;">Submit</button>
-
-<!-- <p id="flash_msg_signup">
-  {% with messages = get_flashed_messages() %} {% if messages %} {% for
-  message in messages %} {{ message }} {% endfor %} {% endif %} {% endwith %}
-</p> -->
 </form>
 {%endblock%}
 </body>
