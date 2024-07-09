@@ -1,0 +1,52 @@
+{% extends "manager.html" %} {% block content %}
+<style>
+  table {
+    width: 100%;
+    margin-top: 20px;
+  }
+  th,
+  td {
+    padding: 10px;
+    text-align: left;
+  }
+  th {
+    background-color: #f8f9fa;
+  }
+  .all-queries {
+    border-spacing: 10px;
+    width: 65%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin-left: 5%;
+    margin-top: 5%;
+  }
+</style>
+<div class="all-queries">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Lead Name</th>
+        <th>Service</th>
+        <th>Phone Number</th>
+        <th>Query</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for query in queries %}
+      <tr>
+        <td>{{ query.id }}</td>
+        <td>{{ query.lead_name }}</td>
+        <td>{{ query.service }}</td>
+        <td>{{ query.phone_number }}</td>
+        <td>{{ query.query }}</td>
+        <td>{{ query.status }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
