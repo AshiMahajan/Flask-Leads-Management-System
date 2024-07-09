@@ -14,11 +14,12 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///salon.db"
-app.config["SECRET_KEY"] = "abczyx"
+app.config["SECRET_KEY"] = "abczyx"  # Secret key for session management
 
 db = SQLAlchemy(app)
 
 
+# Employee model for employees table
 class Employee(db.Model):
     __tablename__ = "employees"
     id = db.Column(db.Integer, primary_key=True)
@@ -28,12 +29,13 @@ class Employee(db.Model):
     password = db.Column(db.String, nullable=False)
     option = db.Column(db.String, nullable=False)
 
+    # Constructor (__init__) for Employee class
     def __init__(self, lead_name, email, phone_number, password, option):
-        self.lead_name = lead_name
-        self.email = email
-        self.phone_number = phone_number
-        self.password = password
-        self.option = option
+        self.lead_name = lead_name  # Initialize lead_name attribute
+        self.email = email  # Initialize email attribute
+        self.phone_number = phone_number  # Initialize phone_number attribute
+        self.password = password  # Initialize password attribute
+        self.option = option  # Initialize option attribute
 
 
 class User(db.Model):
@@ -69,10 +71,15 @@ class Query(db.Model):
         self.query = query
 
 
+# Function to save employee data to database
 def save_employee(lead_name, email, phone_number, password, option):
+
+    # Check if email already exists in employees table
     if Employee.query.filter_by(email=email).first():
         flash("Email already exists.", "error")
         return False
+
+    # Create new Employee object and add to session
     employee = Employee(
         lead_name=lead_name,
         email=email,
@@ -80,15 +87,20 @@ def save_employee(lead_name, email, phone_number, password, option):
         password=password,
         option=option,
     )
-    db.session.add(employee)
-    db.session.commit()
+    db.session.add(employee)  # Add employee to session
+    db.session.commit()  # Commit changes to database
     return True
 
 
+# Function to save user data to database
 def save_user(lead_name, email, phone_number, password, option):
+
+    # Check if email already exists in users table
     if User.query.filter_by(email=email).first():
         flash("Email already exists.", "error")
         return False
+
+    # Create new User object and add to session
     user = User(
         lead_name=lead_name,
         email=email,
@@ -96,26 +108,31 @@ def save_user(lead_name, email, phone_number, password, option):
         password=password,
         option=option,
     )
-    db.session.add(user)
-    db.session.commit()
+    db.session.add(user)  # Add employee to session
+    db.session.commit()  # Commit changes to database
     return True
 
 
+# Function to check user credentials
 def check_user(email, password):
+    # Check if user exists in users table
     user = User.query.filter_by(email=email, password=password).first()
     if user:
-        return user.lead_name, user.option
+        return user.lead_name, user.option  # Return lead_name and option
+    # Check if user exists in employees table
     employee = Employee.query.filter_by(email=email, password=password).first()
     if employee:
-        return employee.lead_name, employee.option
-    return None, None
+        return employee.lead_name, employee.option  # Return lead_name and option
+    return None, None  # Return None if user not found
 
 
+# Route for home page
 @app.route("/")
 def hello_world():
     return render_template("home.html")
 
 
+# Route for signup page
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
@@ -172,6 +189,7 @@ def signup():
     return render_template("signup.html")
 
 
+# Route for login page
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -201,6 +219,7 @@ def login():
     return render_template("login.html")
 
 
+# Route for contact us after logging in
 @app.route("/login/user/contact_us", methods=["GET", "POST"])
 def contact_us_for_signedup():
     lead_name = session.get("lead_name")
@@ -244,6 +263,7 @@ def contact_us_for_signedup():
     return render_template("login_user.html")
 
 
+# Route for contact us page
 @app.route("/contact_us", methods=["GET", "POST"])
 def contact_us():
     if request.method == "POST":
@@ -277,6 +297,7 @@ def contact_us():
     return render_template("contact_us.html")
 
 
+# Route for admin's dashboard page
 @app.route("/login/admin", methods=["GET"])
 def login_admin():
     if session.get("user_option") == "admin":
@@ -292,6 +313,7 @@ def login_admin():
     return redirect(url_for("hello_world"))
 
 
+# Route for user's dashboard page
 @app.route("/login/user", methods=["GET"])
 def login_user():
     if session.get("user_option") == "user":
@@ -310,6 +332,7 @@ def login_user():
     return redirect(url_for("hello_world"))
 
 
+# Route for manager's dashboard page
 @app.route("/login/manager", methods=["GET", "POST"])
 def login_manager():
     if session.get("user_option") == "manager":
@@ -334,6 +357,7 @@ def login_manager():
     return redirect(url_for("hello_world"))
 
 
+# Route for manager's add/ update/ delete page
 @app.route("/manager/all_leads")
 def all_leads():
     if session.get("user_option") == "manager":
@@ -345,6 +369,7 @@ def all_leads():
     return redirect(url_for("hello_world"))
 
 
+# Route for admin's add/ update/ delete page
 @app.route("/admin/all_employees")
 def all_employees():
     if session.get("user_option") == "admin":
@@ -356,6 +381,7 @@ def all_employees():
     return redirect(url_for("hello_world"))
 
 
+# Route for manager's add page
 @app.route("/manager/all_leads/add", methods=["GET", "POST"])
 def all_leads_add():
     if session.get("user_option") == "manager":
@@ -416,6 +442,7 @@ def all_leads_add():
     return redirect(url_for("hello_world"))
 
 
+# Route for manager's update page
 @app.route("/manager/all_leads/update", methods=["GET", "POST"])
 def all_leads_update():
     if session.get("user_option") == "manager":
@@ -423,7 +450,6 @@ def all_leads_update():
         phone_number = session.get("phone_number")
         if request.method == "POST":
             id = request.form.get("id")
-            # phone_number = request.form.get("phone_number")
             services = request.form.getlist("service")
             service = ", ".join(services)
             query = request.form.get("query")
@@ -465,6 +491,7 @@ def all_leads_update():
     return redirect(url_for("hello_world"))
 
 
+# Route for manager's delete page
 @app.route("/manager/all_leads/delete", methods=["GET", "POST"])
 def all_leads_delete():
     if session.get("user_option") == "manager":
@@ -491,6 +518,7 @@ def all_leads_delete():
     return redirect(url_for("hello_world"))
 
 
+# Route for user's tracking details (after logging-in)
 @app.route("/your_details", methods=["GET", "POST"])
 def your_details():
     if session.get("user_option") == "user":
@@ -543,12 +571,14 @@ def your_details():
         return redirect(url_for("hello_world"))
 
 
+# Route for logout
 @app.route("/logout")
 def logout():
     session.clear()
     return render_template("logout.html")
 
 
+# Route for manager's all queries
 @app.route("/login/manager/all_queries")
 def all_queries():
     if session.get("user_option") == "manager":
@@ -557,6 +587,7 @@ def all_queries():
     return redirect(url_for("hello_world"))
 
 
+# Route for admin's add page
 @app.route("/admin/add", methods=["GET", "POST"])
 def employees_add():
     if session.get("user_option") == "admin":
@@ -641,6 +672,7 @@ def employees_add():
     return redirect(url_for("hello_world"))
 
 
+# Route for admin's update page
 @app.route("/admin/update", methods=["GET", "POST"])
 def employees_update():
     if session.get("user_option") == "admin":
@@ -688,6 +720,7 @@ def employees_update():
     return redirect(url_for("hello_world"))
 
 
+# Route for admin's delete page
 @app.route("/admin/delete", methods=["GET", "POST"])
 def employee_delete():
     if session.get("user_option") == "admin":
@@ -714,11 +747,13 @@ def employee_delete():
     return redirect(url_for("hello_world"))
 
 
+# Error handler (404 not found)
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html")
 
 
+# Run the app
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
