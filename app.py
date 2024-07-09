@@ -6,7 +6,6 @@ from flask import (
     url_for,
     flash,
     session,
-    abort,
 )
 from sqlalchemy import func
 from markupsafe import Markup
@@ -219,50 +218,6 @@ def login():
     return render_template("login.html")
 
 
-# Route for contact us after logging in
-@app.route("/login/user/contact_us", methods=["GET", "POST"])
-def contact_us_for_signedup():
-    lead_name = session.get("lead_name")
-    phone_number = session.get("phone_number")
-
-    if not lead_name or not phone_number:
-        return redirect(url_for("hello_world"))
-
-    if request.method == "GET":
-        return render_template(
-            "contact_us_for_signed.html",
-            lead_name=lead_name,
-            phone_number=phone_number,
-        )
-
-    if request.method == "POST":
-        if session.get("user_option") == "user":
-            services = request.form.getlist("service")
-            service = ", ".join(services)
-            query = request.form.get("query")
-            status = request.form.get("status")
-            if not service or not query:
-                flash("Please fill out all fields.", "error")
-            else:
-                contact = Query(
-                    lead_name=lead_name,
-                    service=service,
-                    phone_number=phone_number,
-                    query=query,
-                )
-                db.session.add(contact)
-                db.session.commit()
-                flash(
-                    Markup(
-                        "<h1 style='color: green'>Query Submitted, we will reach out to you shortly!</h1>"
-                    ),
-                    "success",
-                )
-                return redirect(url_for("login_user"))
-
-    return render_template("login_user.html")
-
-
 # Route for contact us page
 @app.route("/contact_us", methods=["GET", "POST"])
 def contact_us():
@@ -297,22 +252,6 @@ def contact_us():
     return render_template("contact_us.html")
 
 
-# Route for admin's dashboard page
-@app.route("/login/admin", methods=["GET"])
-def login_admin():
-    if session.get("user_option") == "admin":
-        lead_name = session.get("lead_name")
-        phone_number = session.get("phone_number")
-        employees = Employee.query.all()
-        return render_template(
-            "admin_page.html",
-            lead_name=lead_name,
-            phone_number=phone_number,
-            employees=employees,
-        )
-    return redirect(url_for("hello_world"))
-
-
 # Route for user's dashboard page
 @app.route("/login/user", methods=["GET"])
 def login_user():
@@ -328,192 +267,6 @@ def login_user():
             status=status,
             id=id,
             phone_number=phone_number,
-        )
-    return redirect(url_for("hello_world"))
-
-
-# Route for manager's dashboard page
-@app.route("/login/manager", methods=["GET", "POST"])
-def login_manager():
-    if session.get("user_option") == "manager":
-        total_users = db.session.query(func.count(Query.id)).scalar()
-        pending_leads = db.session.query(Query).filter_by(status="pending").count()
-        call_done_leads = db.session.query(Query).filter_by(status="call_done").count()
-        waiting_leads = db.session.query(Query).filter_by(status="waiting").count()
-        scheduled_leads = db.session.query(Query).filter_by(status="scheduled").count()
-        converted_leads = db.session.query(Query).filter_by(status="converted").count()
-        declined_leads = db.session.query(Query).filter_by(status="declined").count()
-
-        return render_template(
-            "manager.html",
-            total_users=total_users,
-            pending_leads=pending_leads,
-            call_done_leads=call_done_leads,
-            waiting_leads=waiting_leads,
-            scheduled_leads=scheduled_leads,
-            converted_leads=converted_leads,
-            declined_leads=declined_leads,
-        )
-    return redirect(url_for("hello_world"))
-
-
-# Route for manager's add/ update/ delete page
-@app.route("/manager/all_leads")
-def all_leads():
-    if session.get("user_option") == "manager":
-        lead_name = session.get("lead_name")
-        phone_number = session.get("phone_number")
-        return render_template(
-            "all_leads.html", lead_name=lead_name, phone_number=phone_number
-        )
-    return redirect(url_for("hello_world"))
-
-
-# Route for admin's add/ update/ delete page
-@app.route("/admin/all_employees")
-def all_employees():
-    if session.get("user_option") == "admin":
-        lead_name = session.get("lead_name")
-        phone_number = session.get("phone_number")
-        return render_template(
-            "all_employees.html", lead_name=lead_name, phone_number=phone_number
-        )
-    return redirect(url_for("hello_world"))
-
-
-# Route for manager's add page
-@app.route("/manager/all_leads/add", methods=["GET", "POST"])
-def all_leads_add():
-    if session.get("user_option") == "manager":
-        lead_name = session.get("lead_name")
-        phone_number = session.get("phone_number")
-        if request.method == "POST":
-            lead_name = request.form.get("lead_name")
-            services = request.form.getlist("service")
-            service = ", ".join(services)
-            phone_number = request.form.get("phone_number")
-            query = request.form.get("query")
-            if (
-                len(phone_number) != 10
-                or service == ""
-                or len(query) < 5
-                or len(query) > 50
-            ):
-                flash("Enter all details correctly to proceed.")
-                return redirect(
-                    url_for(
-                        "all_leads_add", lead_name=lead_name, phone_number=phone_number
-                    )
-                )
-            if db.session.query(Query).filter_by(phone_number=phone_number).first():
-                flash("Lead with this phone number already exists.")
-                return redirect(
-                    url_for(
-                        "all_leads_add", lead_name=lead_name, phone_number=phone_number
-                    )
-                )
-            else:
-                try:
-                    contact = Query(
-                        lead_name=lead_name,
-                        service=service,
-                        phone_number=phone_number,
-                        query=query,
-                    )
-                    db.session.add(contact)
-                    db.session.commit()
-                    flash("User added successfully.")
-                    return redirect(
-                        url_for(
-                            "all_leads", lead_name=lead_name, phone_number=phone_number
-                        )
-                    )
-                except:
-                    db.session.rollback()
-                    flash("Lead with this phone number already exists.")
-                    return render_template(
-                        "manager_add.html",
-                        lead_name=lead_name,
-                        phone_number=phone_number,
-                    )
-        return render_template(
-            "manager_add.html", lead_name=lead_name, phone_number=phone_number
-        )
-    return redirect(url_for("hello_world"))
-
-
-# Route for manager's update page
-@app.route("/manager/all_leads/update", methods=["GET", "POST"])
-def all_leads_update():
-    if session.get("user_option") == "manager":
-        lead_name = session.get("lead_name")
-        phone_number = session.get("phone_number")
-        if request.method == "POST":
-            id = request.form.get("id")
-            services = request.form.getlist("service")
-            service = ", ".join(services)
-            query = request.form.get("query")
-            status = request.form.get("status")
-            if not id:
-                flash("Enter ID to proceed further.", "error")
-                return render_template(
-                    "manager_update.html",
-                    lead_name=lead_name,
-                    phone_number=phone_number,
-                )
-            if not service and not status and not query:
-                flash("Enter at least one field to proceed further.", "error")
-                return render_template(
-                    "manager_update.html",
-                    lead_name=lead_name,
-                    phone_number=phone_number,
-                )
-            else:
-                lead = db.session.query(Query).filter_by(id=id).first()
-                if lead:
-                    # if phone_number:
-                    #     lead.phone_number = phone_number
-                    if service:
-                        lead.service = service
-                    if query:
-                        lead.query = query
-                    if status:
-                        lead.status = status
-                    db.session.commit()
-                    flash("Lead updated successfully.", "success")
-                    return redirect(url_for("all_leads"))
-                else:
-                    flash("No lead found with that phone number.", "error")
-                    return render_template("manager_update.html")
-        return render_template(
-            "manager_update.html", lead_name=lead_name, phone_number=phone_number
-        )
-    return redirect(url_for("hello_world"))
-
-
-# Route for manager's delete page
-@app.route("/manager/all_leads/delete", methods=["GET", "POST"])
-def all_leads_delete():
-    if session.get("user_option") == "manager":
-        lead_name = session.get("lead_name")
-        phone_number = session.get("phone_number")
-        if request.method == "POST":
-            id = request.form.get("id")
-            if not id:
-                flash("Please enter the lead's ID.", "error")
-                return render_template("manager_delete.html")
-            else:
-                lead = db.session.query(Query).filter_by(id=id).first()
-                if lead:
-                    db.session.delete(lead)
-                    db.session.commit()
-                    flash("Lead deleted successfully.")
-                    return redirect(url_for("all_leads"))
-                else:
-                    flash("No lead found with the above ID.", "error")
-                    return render_template("manager_delete.html")
-        return render_template(
-            "manager_delete.html", lead_name=lead_name, phone_number=phone_number
         )
     return redirect(url_for("hello_world"))
 
@@ -571,19 +324,75 @@ def your_details():
         return redirect(url_for("hello_world"))
 
 
-# Route for logout
-@app.route("/logout")
-def logout():
-    session.clear()
-    return render_template("logout.html")
+# Route for contact us after logging in
+@app.route("/login/user/contact_us", methods=["GET", "POST"])
+def contact_us_for_signedup():
+    lead_name = session.get("lead_name")
+    phone_number = session.get("phone_number")
+
+    if not lead_name or not phone_number:
+        return redirect(url_for("hello_world"))
+
+    if request.method == "GET":
+        return render_template(
+            "contact_us_for_signed.html",
+            lead_name=lead_name,
+            phone_number=phone_number,
+        )
+
+    if request.method == "POST":
+        if session.get("user_option") == "user":
+            services = request.form.getlist("service")
+            service = ", ".join(services)
+            query = request.form.get("query")
+            status = request.form.get("status")
+            if not service or not query:
+                flash("Please fill out all fields.", "error")
+            else:
+                contact = Query(
+                    lead_name=lead_name,
+                    service=service,
+                    phone_number=phone_number,
+                    query=query,
+                )
+                db.session.add(contact)
+                db.session.commit()
+                flash(
+                    Markup(
+                        "<h1 style='color: green'>Query Submitted, we will reach out to you shortly!</h1>"
+                    ),
+                    "success",
+                )
+                return redirect(url_for("login_user"))
+
+    return render_template("login_user.html")
 
 
-# Route for manager's all queries
-@app.route("/login/manager/all_queries")
-def all_queries():
-    if session.get("user_option") == "manager":
-        queries = db.session.query(Query).all()
-        return render_template("all_queries.html", queries=queries)
+# Route for admin's dashboard page
+@app.route("/login/admin", methods=["GET"])
+def login_admin():
+    if session.get("user_option") == "admin":
+        lead_name = session.get("lead_name")
+        phone_number = session.get("phone_number")
+        employees = Employee.query.all()
+        return render_template(
+            "admin_page.html",
+            lead_name=lead_name,
+            phone_number=phone_number,
+            employees=employees,
+        )
+    return redirect(url_for("hello_world"))
+
+
+# Route for admin's add/ update/ delete page
+@app.route("/admin/all_employees")
+def all_employees():
+    if session.get("user_option") == "admin":
+        lead_name = session.get("lead_name")
+        phone_number = session.get("phone_number")
+        return render_template(
+            "all_employees.html", lead_name=lead_name, phone_number=phone_number
+        )
     return redirect(url_for("hello_world"))
 
 
@@ -745,6 +554,194 @@ def employee_delete():
             "delete_admin.html", lead_name=lead_name, phone_number=phone_number
         )
     return redirect(url_for("hello_world"))
+
+
+# Route for manager's dashboard page
+@app.route("/login/manager", methods=["GET", "POST"])
+def login_manager():
+    if session.get("user_option") == "manager":
+        total_users = db.session.query(func.count(Query.id)).scalar()
+        pending_leads = db.session.query(Query).filter_by(status="pending").count()
+        call_done_leads = db.session.query(Query).filter_by(status="call_done").count()
+        waiting_leads = db.session.query(Query).filter_by(status="waiting").count()
+        scheduled_leads = db.session.query(Query).filter_by(status="scheduled").count()
+        converted_leads = db.session.query(Query).filter_by(status="converted").count()
+        declined_leads = db.session.query(Query).filter_by(status="declined").count()
+
+        return render_template(
+            "manager.html",
+            total_users=total_users,
+            pending_leads=pending_leads,
+            call_done_leads=call_done_leads,
+            waiting_leads=waiting_leads,
+            scheduled_leads=scheduled_leads,
+            converted_leads=converted_leads,
+            declined_leads=declined_leads,
+        )
+    return redirect(url_for("hello_world"))
+
+
+# Route for manager's add/ update/ delete page
+@app.route("/manager/all_leads")
+def all_leads():
+    if session.get("user_option") == "manager":
+        lead_name = session.get("lead_name")
+        phone_number = session.get("phone_number")
+        return render_template(
+            "all_leads.html", lead_name=lead_name, phone_number=phone_number
+        )
+    return redirect(url_for("hello_world"))
+
+
+# Route for manager's add page
+@app.route("/manager/all_leads/add", methods=["GET", "POST"])
+def all_leads_add():
+    if session.get("user_option") == "manager":
+        lead_name = session.get("lead_name")
+        phone_number = session.get("phone_number")
+        if request.method == "POST":
+            lead_name = request.form.get("lead_name")
+            services = request.form.getlist("service")
+            service = ", ".join(services)
+            phone_number = request.form.get("phone_number")
+            query = request.form.get("query")
+            if (
+                len(phone_number) != 10
+                or service == ""
+                or len(query) < 5
+                or len(query) > 50
+            ):
+                flash("Enter all details correctly to proceed.")
+                return redirect(
+                    url_for(
+                        "all_leads_add", lead_name=lead_name, phone_number=phone_number
+                    )
+                )
+            if db.session.query(Query).filter_by(phone_number=phone_number).first():
+                flash("Lead with this phone number already exists.")
+                return redirect(
+                    url_for(
+                        "all_leads_add", lead_name=lead_name, phone_number=phone_number
+                    )
+                )
+            else:
+                try:
+                    contact = Query(
+                        lead_name=lead_name,
+                        service=service,
+                        phone_number=phone_number,
+                        query=query,
+                    )
+                    db.session.add(contact)
+                    db.session.commit()
+                    flash("User added successfully.")
+                    return redirect(
+                        url_for(
+                            "all_leads", lead_name=lead_name, phone_number=phone_number
+                        )
+                    )
+                except:
+                    db.session.rollback()
+                    flash("Lead with this phone number already exists.")
+                    return render_template(
+                        "manager_add.html",
+                        lead_name=lead_name,
+                        phone_number=phone_number,
+                    )
+        return render_template(
+            "manager_add.html", lead_name=lead_name, phone_number=phone_number
+        )
+    return redirect(url_for("hello_world"))
+
+
+# Route for manager's update page
+@app.route("/manager/all_leads/update", methods=["GET", "POST"])
+def all_leads_update():
+    if session.get("user_option") == "manager":
+        lead_name = session.get("lead_name")
+        phone_number = session.get("phone_number")
+        if request.method == "POST":
+            id = request.form.get("id")
+            services = request.form.getlist("service")
+            service = ", ".join(services)
+            query = request.form.get("query")
+            status = request.form.get("status")
+            if not id:
+                flash("Enter ID to proceed further.", "error")
+                return render_template(
+                    "manager_update.html",
+                    lead_name=lead_name,
+                    phone_number=phone_number,
+                )
+            if not service and not status and not query:
+                flash("Enter at least one field to proceed further.", "error")
+                return render_template(
+                    "manager_update.html",
+                    lead_name=lead_name,
+                    phone_number=phone_number,
+                )
+            else:
+                lead = db.session.query(Query).filter_by(id=id).first()
+                if lead:
+                    if service:
+                        lead.service = service
+                    if query:
+                        lead.query = query
+                    if status:
+                        lead.status = status
+                    db.session.commit()
+                    flash("Lead updated successfully.", "success")
+                    return redirect(url_for("all_leads"))
+                else:
+                    flash("No lead found with that phone number.", "error")
+                    return render_template("manager_update.html")
+        return render_template(
+            "manager_update.html", lead_name=lead_name, phone_number=phone_number
+        )
+    return redirect(url_for("hello_world"))
+
+
+# Route for manager's delete page
+@app.route("/manager/all_leads/delete", methods=["GET", "POST"])
+def all_leads_delete():
+    if session.get("user_option") == "manager":
+        lead_name = session.get("lead_name")
+        phone_number = session.get("phone_number")
+        if request.method == "POST":
+            id = request.form.get("id")
+            if not id:
+                flash("Please enter the lead's ID.", "error")
+                return render_template("manager_delete.html")
+            else:
+                lead = db.session.query(Query).filter_by(id=id).first()
+                if lead:
+                    db.session.delete(lead)
+                    db.session.commit()
+                    flash("Lead deleted successfully.")
+                    return redirect(url_for("all_leads"))
+                else:
+                    flash("No lead found with the above ID.", "error")
+                    return render_template("manager_delete.html")
+        return render_template(
+            "manager_delete.html", lead_name=lead_name, phone_number=phone_number
+        )
+    return redirect(url_for("hello_world"))
+
+
+# Route for manager's all queries
+@app.route("/login/manager/all_queries")
+def all_queries():
+    if session.get("user_option") == "manager":
+        queries = db.session.query(Query).all()
+        return render_template("all_queries.html", queries=queries)
+    return redirect(url_for("hello_world"))
+
+
+# Route for logout
+@app.route("/logout")
+def logout():
+    session.clear()
+    return render_template("logout.html")
 
 
 # Error handler (404 not found)
