@@ -1,0 +1,146 @@
+{% extends "admin_page.html" %} {% block title %}Admin Update{% endblock %} {%
+block content %}
+<style>
+  #form_hover_update:hover {
+    box-shadow: 0px 0px 20px rgb(138, 138, 138);
+  }
+  #update_submit {
+    opacity: 0.8;
+    transition: transform 1s;
+  }
+  #update_submit:hover {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+</style>
+
+<form
+  action="/admin/update"
+  id="form_hover_update"
+  method="post"
+  class="flex flex-col w-3/4 items-center self-center h-auto"
+  style="
+    width: 40%;
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    align-self: center;
+    background-color: rgba(110, 141, 132, 0.507);
+    margin-left: 10rem;
+    color: rgb(55 65 81);
+    border-radius: 24px;
+    box-sizing: border-box;
+    border: solid;
+    border-color: rgba(43, 43, 43, 0.664);
+  "
+>
+  <label for="id" style="margin-top: 10%">Enter Employee's ID</label>
+  <input
+    type="text"
+    id="id"
+    name="id"
+    placeholder="..."
+    style="
+      border-radius: 3px;
+      font-size: 15px;
+      width: 65%;
+      height: 25px;
+      margin-top: 15px;
+      text-align: center;
+    "
+  />
+  <br />
+
+  <label for="lead_name" style="margin-bottom: 16px">Name:</label>
+  <input
+    type="text"
+    id="lead_name"
+    name="lead_name"
+    placeholder="..."
+    style="
+      border-radius: 3px;
+      font-size: 15px;
+      width: 65%;
+      height: 25px;
+      margin-top: 15px;
+      text-align: center;
+    "
+  />
+  <br />
+
+  <label for="email" style="margin-top: 16px">Email:</label>
+  <input
+    type="email"
+    id="email"
+    name="email"
+    placeholder="abc@xyz.com"
+    style="
+      border-radius: 3px;
+      font-size: 15px;
+      width: 65%;
+      height: 25px;
+      margin-top: 15px;
+      text-align: center;
+    "
+  />
+  <br />
+  <label for="phone_number" style="margin-top: 10%">Enter phone number</label>
+  <input
+    type="text"
+    id="phone_number"
+    name="phone_number"
+    placeholder="..."
+    style="
+      border-radius: 3px;
+      font-size: 15px;
+      width: 65%;
+      height: 25px;
+      margin-top: 15px;
+      text-align: center;
+    "
+  />
+  <br />
+
+  <label for="option" style="margin-bottom: 16px">Option:</label>
+  <div
+    style="
+      margin-top: 2%;
+      font-size: 15px;
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+    "
+  >
+    <input type="radio" name="option" id="option1" value="admin" /> Admin
+    <input type="radio" name="option" id="option3" value="manager" /> Manager
+  </div>
+
+  {% with messages = get_flashed_messages() %} {% if messages %} {% for message
+  in messages %}
+  <p
+    style="
+      color: #dc2626;
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    "
+  >
+    {{ message }}
+  </p>
+  {% endfor %} {% endif %} {% endwith %}
+
+  <button
+    type="submit"
+    id="update_submit"
+    style="
+      margin-bottom: 16px;
+      margin-top: 5%;
+      background-color: cornflowerblue;
+      width: 20%;
+      font-size: 18px;
+      color: cornsilk;
+    "
+  >
+    Submit
+  </button>
+</form>
+{% endblock %}
