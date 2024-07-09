@@ -1,11 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <link
+      href="{{url_for('static',filename='css/output.css')}}"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <title>User</title>
   </head>
-  <body>
-    <h>Hi</h>
+  <style>
+    body {
+      background-image: url("{{url_for('static',filename='css/login_pg.png')}}");
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+    }
+  </style>
+  <body class="h-screen bg-ima">
+    <div class="flex h-screen justify-between items-center">
+      <div class="text-white font-bold p-4 rounded ml-12">
+        <h4 class="text-3xl ml-16 mb-4">Welcome</h4>
+        <h1 class="text-5xl ml-28 italic">{{ lead_name }}</h1>
+      </div>
+      <div
+        class="mr-32 text-2xl gap-8 flex flex-col justify-center items-center bg-white shadow-md box-border border-solid rounded-xl mx-2 p-28"
+      >
+        <button
+          onclick="window.location.href='/your_details'"
+          class="text-gray-700 font-bold py-2 px-4 rounded mb-4"
+        >
+          Track Your Details
+        </button>
+        <p class="text-red-600 text-center font-bold text-base">
+          {% with messages = get_flashed_messages() %} {% if messages %} {% for
+          message in messages %} {{ message }} {% endfor %} {% endif %} {%
+          endwith %}
+        </p>
+        <button
+          onclick="window.location.href='/login/user/contact_us'"
+          class="text-gray-700 font-bold py-2 px-4 rounded mb-4"
+        >
+          Contact Us
+        </button>
+      </div>
+    </div>
   </body>
 </html>
