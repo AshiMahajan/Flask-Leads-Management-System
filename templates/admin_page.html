@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="{{ url_for('static', filename='css/output.css') }}"
+      rel="stylesheet"
+    />
+    <style>
+      table {
+        width: 100%;
+        margin-top: 20px;
+        text-align-last: center;
+        font-size: 18px;
+        background-color: #3cc2ff14;
+      }
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+      }
+      th {
+        background-color: #f8f9fa;
+      }
+      #emp_info {
+        text-align: center;
+        font-size: 15px;
+        font-style: italic;
+      }
+      .container {
+        margin-top: 9%;
+        width: 75%;
+      }
+      #dashboard_button,
+      #all_button {
+        opacity: 0.8;
+        font-variant-caps: all-petite-caps;
+      }
+      #dashboard_button:hover,
+      #all_button:hover {
+        opacity: 1;
+        font-variant: small-caps;
+      }
+      #logout {
+        opacity: 0.8;
+        transition: transform 1s;
+      }
+      #logout_button:hover {
+        opacity: 1;
+        transform: scale(1.12);
+      }
+    </style>
+    <title>Admin</title>
+  </head>
+  <body>
+    <div class="flex h-screen">
+      <div
+        class="w-1/4 items-stretch p-20 flex flex-col space-y-4"
+        style="background-image: linear-gradient(46deg, #0d00ff, #a53131)"
+      >
+        <button
+          id="dashboard_button"
+          type="submit"
+          onclick="window.location.href='/login/admin'"
+          class="text-white"
+          style="
+            background-color: #ef9f09;
+            width: 120%;
+            margin-left: -40px;
+            font-size: 20px;
+            border-radius: 3px;
+          "
+        >
+          Dashboard
+        </button>
+        <button
+          type="submit"
+          id="all_button"
+          onclick="window.location.href='/admin/all_employees'"
+          class="text-white"
+          style="
+            background-color: #ef9f09;
+            width: 120%;
+            border-radius: 3px;
+            margin-left: -40px;
+            font-size: 20px;
+          "
+        >
+          All
+        </button>
+        <button
+          id="logout_button"
+          type="button"
+          onclick="window.location.href='/logout'"
+          style="
+            background-color: darkgray;
+            border-radius: 3px;
+            width: 120%;
+            font-variant: all-petite-caps;
+            margin-left: -40px;
+            font-size: 20px;
+            margin-top: 500px;
+          "
+        >
+          Logout
+        </button>
+      </div>
+      {% block content %}
+      <div class="container">
+        <h1 id="emp_info">Employee Information</h1>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone Number</th>
+              <th>Option</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for employee in employees %}
+            <tr>
+              <td>{{ employee.id }}</td>
+              <td>{{ employee.lead_name }}</td>
+              <td>{{ employee.email }}</td>
+              <td>{{ employee.phone_number }}</td>
+              <td>{{ employee.option }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endblock %}
+    </div>
+  </body>
+</html>
