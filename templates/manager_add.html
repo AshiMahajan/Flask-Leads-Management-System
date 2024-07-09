@@ -52,7 +52,36 @@ block form%}
       text-align: center;
       margin-bottom: -35px;
     "
-    required
+  />
+  <br />
+  <label for="phone_number" style="margin-top: 10%">Phone Number:</label>
+  <input
+    type="text"
+    id="phone_number"
+    name="phone_number"
+    placeholder="..."
+    style="
+      border-radius: 3px;
+      font-size: 15px;
+      width: 65%;
+      height: 25px;
+      margin-top: 15px;
+      text-align: center;
+    "
   /><br />
-  {% endblock %} {% block status%}{%endblock%}
+  {% with messages = get_flashed_messages() %} {% if messages %} {% for message
+  in messages %}
+  <p
+    style="
+      color: #dc2626;
+      margin-bottom: 1rem;
+      margin-top: 1rem;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    "
+  >
+    {{ message }}
+  </p>
+  {% endfor %} {% endif %} {% endwith %} {% endblock %} {% block lead %}
+  {%endblock%} {% block status%}{%endblock%}
 </form>
