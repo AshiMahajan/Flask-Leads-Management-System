@@ -141,13 +141,18 @@ def signup():
         password = request.form["password"]
         option = request.form["options"]
 
-        existing_user = db.session.query(User).filter_by(email=email).first()
+        existing_user = (
+            db.session.query(User)
+            .filter_by(phone_number=phone_number, email=email)
+            .first()
+        )
         existing_employee = (
             db.session.query(Query).filter_by(phone_number=phone_number).first()
         )
 
         if existing_user or existing_employee:
             flash("Email or phone number already exists!", "error")
+            return redirect(url_for("signup"))
         else:
             if (
                 (option == "admin" and not email.endswith("@marvel.com"))
@@ -409,6 +414,14 @@ def employees_add():
             password = request.form.get("password")
             option = request.form.get("option")
 
+            if option == "manager" and not email.endswith("@manager.com"):
+                flash("Invalid email for user option.")
+                return render_template("admin_add.html")
+
+            if option == "admin" and not email.endswith("@marvel.com"):
+                flash("Invalid email for user option.")
+                return render_template("admin_add.html")
+
             if option == "user" and email.endswith("@gmail.com"):
                 if db.session.query(User).filter_by(email=email).first():
                     flash("User with this email already exists.")
@@ -618,6 +631,20 @@ def all_leads_add():
                     )
                 )
             if db.session.query(Query).filter_by(phone_number=phone_number).first():
+                flash("Lead with this phone number already exists.")
+                return redirect(
+                    url_for(
+                        "all_leads_add", lead_name=lead_name, phone_number=phone_number
+                    )
+                )
+            if db.session.query(User).filter_by(phone_number=phone_number).first():
+                flash("Lead with this phone number already exists.")
+                return redirect(
+                    url_for(
+                        "all_leads_add", lead_name=lead_name, phone_number=phone_number
+                    )
+                )
+            if db.session.query(Employee).filter_by(phone_number=phone_number).first():
                 flash("Lead with this phone number already exists.")
                 return redirect(
                     url_for(
