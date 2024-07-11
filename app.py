@@ -134,19 +134,31 @@ def save_user(lead_name, email, phone_number, password):
     if User.query.filter_by(email=email).first():
         flash("Email already exists.", "error")
         return False
-    
+
     if email.endswith("@admin.com"):
-        employee = Employee(lead_name=lead_name, email=email, phone_number=phone_number, password=password, option="admin")
+        employee = Employee(
+            lead_name=lead_name,
+            email=email,
+            phone_number=phone_number,
+            password=password,
+            option="admin",
+        )
         db.session.add(employee)
         db.session.commit()
         return True
-    
+
     elif email.endswith("@manager.com"):
-        employee = Employee(lead_name=lead_name, email=email, phone_number=phone_number, password=password, option="manager")
+        employee = Employee(
+            lead_name=lead_name,
+            email=email,
+            phone_number=phone_number,
+            password=password,
+            option="manager",
+        )
         db.session.add(employee)
         db.session.commit()
         return True
-    
+
     else:
         # Create new User object and add to session
         user = User(
