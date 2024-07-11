@@ -29,8 +29,8 @@
         font-style: italic;
       }
       .container {
-        margin-top: 9%;
-        width: 75%;
+        margin-top: 5%;
+        width: 100%;
       }
       #dashboard_button,
       #all_button {
@@ -49,6 +49,11 @@
       #logout_button:hover {
         opacity: 1;
         transform: scale(1.12);
+      }
+      .emp_user_info {
+        display: flex;
+        width: 75%;
+        flex-direction: column;
       }
     </style>
     <title>Admin</title>
@@ -107,30 +112,58 @@
         </button>
       </div>
       {% block content %}
-      <div class="container">
-        <h1 id="emp_info">Employee Information</h1>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Phone Number</th>
-              <th>Option</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for employee in employees %}
-            <tr>
-              <td>{{ employee.id }}</td>
-              <td>{{ employee.lead_name }}</td>
-              <td>{{ employee.email }}</td>
-              <td>{{ employee.phone_number }}</td>
-              <td>{{ employee.option }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+      <div class="emp_user_info">
+        <div class="container">
+          <h1 id="emp_info">Employee Information</h1>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for employee in employees %}
+              <tr>
+                <td>{{ employee.id }}</td>
+                <td>{{ employee.lead_name }}</td>
+                <td>{{ employee.email }}</td>
+                <td>{{ employee.phone_number }}</td>
+                <td>{{ employee.option }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <br />
+        <div class="container">
+          <h1 id="emp_info">User Information</h1>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for user in users %}
+              <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.lead_name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phone_number }}</td>
+                <td>{{ user.option }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
       {% endblock %}
     </div>
