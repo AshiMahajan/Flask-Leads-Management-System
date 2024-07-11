@@ -68,23 +68,6 @@ content %}
     "
     placeholder="********"
   /><br />
-  <label for="email">Define your role:</label>
-  <div
-    style="
-      margin-top: 2%;
-      font-size: 15px;
-      display: flex;
-      flex-direction: row;
-      gap: 10px;
-    "
-  >
-    <input type="radio" name="options" id="option2" value="user" required />
-    User
-    <input type="radio" name="options" id="option1" value="admin" required />
-    Admin
-    <input type="radio" name="options" id="option3" value="manager" required />
-    Manager
-  </div>
   <p class="text-red-600 text-sm mt-4 mb-4">
     {% with messages = get_flashed_messages() %} {% if messages %} {% for
     message in messages %} {{ message }} {% endfor %} {% endif %} {% endwith %}
