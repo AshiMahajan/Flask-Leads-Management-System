@@ -191,7 +191,7 @@ def hello_world():
     return render_template("home.html")
 
 
-# Route for signup page
+# Route for signup
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
@@ -209,15 +209,27 @@ def signup():
             db.session.query(Query).filter_by(phone_number=phone_number).first()
         )
 
-        if existing_user or existing_employee:
+        existing_query = (
+            db.session.query(Query)
+            .filter_by(lead_name=lead_name, phone_number=phone_number)
+            .first()
+        )
+
+        if existing_user:
             flash("Email or phone number already exists!", "error")
             return redirect(url_for("signup"))
+
+        if existing_employee and existing_employee.lead_name != lead_name:
+            flash("Lead name already exists for this phone number!", "error")
+            return redirect(url_for("signup"))
+
         if not (8 <= len(password) <= 13):
             flash("Password must be between 8 to 13 characters!", "error")
             return redirect(url_for("signup"))
 
         else:
-            if save_user(lead_name, email, phone_number, password):
+            if existing_query:
+                save_user(lead_name, email, phone_number, password)
                 flash(
                     Markup(
                         'Account created! <a href="/login" style="color:green">Login</a> now'
@@ -226,12 +238,14 @@ def signup():
                 )
                 return redirect(url_for("signup"))
 
-        return render_template(
-            "signup.html",
-            lead_name=lead_name,
-            email=email,
-            phone_number=phone_number,
-        )
+            if save_user(lead_name, email, phone_number, password):
+                flash(
+                    Markup(
+                        'Account created! <a href="/login" style="color:green">Login</a> now'
+                    ),
+                    "success",
+                )
+                return redirect(url_for("signup"))
 
     return render_template("signup.html")
 
@@ -472,6 +486,18 @@ def employees_add():
                 flash("Enter correct details to proceed.")
                 return render_template("admin_add.html")
 
+            if option == "user" and not email.endswith("@gmail.com"):
+                flash("Enter correct details to proceed.")
+                return render_template("admin_add.html")
+
+            if option == "admin" and not email.endswith("@admin.com"):
+                flash("Enter correct details to proceed.")
+                return render_template("admin_add.html")
+
+            if option == "manager" and not email.endswith("@manager.com"):
+                flash("Enter correct details to proceed.")
+                return render_template("admin_add.html")
+
             try:
                 if option == "user":
                     user = User(
@@ -523,6 +549,13 @@ def employees_update():
 
             if not email and not lead_name and not option and not phone_number:
                 flash("Enter at least one field to proceed further.", "error")
+                return render_template("update_employee.html")
+
+            if option == "admin" and not email.endswith("@admin.com"):
+                flash("Enter correct email.", "error")
+                return render_template("update_employee.html")
+            if option == "manager" and not email.endswith("@manager.com"):
+                flash("Enter correct email.", "error")
                 return render_template("update_employee.html")
 
             employee = db.session.query(Employee).filter_by(id=id).first()
