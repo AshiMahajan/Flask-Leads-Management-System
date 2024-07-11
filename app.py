@@ -7,6 +7,7 @@ from flask import (
     flash,
     session,
 )
+from flask_migrate import Migrate
 from sqlalchemy import func
 from markupsafe import Markup
 from flask_sqlalchemy import SQLAlchemy
@@ -15,7 +16,9 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///salon.db"
 app.config["SECRET_KEY"] = "abczyx"  # Secret key for session management
 
+
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 
 # Employee model for employees table
@@ -34,7 +37,7 @@ class Employee(db.Model):
         self.email = email  # Initialize email attribute
         self.phone_number = phone_number  # Initialize phone_number attribute
         self.password = password  # Initialize password attribute
-        self.option = option  # Initialize option attribute
+        self.option = option
 
 
 class User(db.Model):
@@ -44,14 +47,13 @@ class User(db.Model):
     email = db.Column(db.String, unique=True, nullable=False)
     phone_number = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
-    option = db.Column(db.String, nullable=False)
+    option = db.Column(db.String, nullable=False, default="user")
 
-    def __init__(self, lead_name, email, phone_number, password, option):
+    def __init__(self, lead_name, email, phone_number, password):
         self.lead_name = lead_name
         self.email = email
         self.phone_number = phone_number
         self.password = password
-        self.option = option
 
 
 class Query(db.Model):
@@ -71,7 +73,7 @@ class Query(db.Model):
 
 
 # Function to save employee data to database
-def save_employee(lead_name, email, phone_number, password, option):
+def save_employee(lead_name, email, phone_number, password):
 
     # Check if email already exists in employees table
     if Employee.query.filter_by(email=email).first():
@@ -84,32 +86,78 @@ def save_employee(lead_name, email, phone_number, password, option):
         email=email,
         phone_number=phone_number,
         password=password,
-        option=option,
     )
     db.session.add(employee)  # Add employee to session
     db.session.commit()  # Commit changes to database
     return True
 
 
+def migrate_users():
+    with app.app_context():
+        options = ["admin", "manager"]
+        for option in options:
+            users = User.query.filter(User.option == option).all()
+            for user in users:
+                new_user = Employee(
+                    lead_name=user.lead_name,
+                    email=user.email,
+                    phone_number=user.phone_number,
+                    password=user.password,
+                    option=user.option,
+                )
+                db.session.add(new_user)
+                db.session.delete(user)
+            db.session.commit()
+
+
+def migrate_employee():
+    with app.app_context():
+        options_user = ["user"]
+        for option in options_user:
+            employees = Employee.query.filter(Employee.option == option).all()
+            for employee in employees:
+                new_emp = User(
+                    lead_name=employee.lead_name,
+                    email=employee.email,
+                    phone_number=employee.phone_number,
+                    password=employee.password,
+                )
+                db.session.add(new_emp)
+                db.session.delete(employee)
+            db.session.commit()
+
+
 # Function to save user data to database
-def save_user(lead_name, email, phone_number, password, option):
+def save_user(lead_name, email, phone_number, password):
 
     # Check if email already exists in users table
     if User.query.filter_by(email=email).first():
         flash("Email already exists.", "error")
         return False
-
-    # Create new User object and add to session
-    user = User(
-        lead_name=lead_name,
-        email=email,
-        phone_number=phone_number,
-        password=password,
-        option=option,
-    )
-    db.session.add(user)  # Add employee to session
-    db.session.commit()  # Commit changes to database
-    return True
+    
+    if email.endswith("@admin.com"):
+        employee = Employee(lead_name=lead_name, email=email, phone_number=phone_number, password=password, option="admin")
+        db.session.add(employee)
+        db.session.commit()
+        return True
+    
+    elif email.endswith("@manager.com"):
+        employee = Employee(lead_name=lead_name, email=email, phone_number=phone_number, password=password, option="manager")
+        db.session.add(employee)
+        db.session.commit()
+        return True
+    
+    else:
+        # Create new User object and add to session
+        user = User(
+            lead_name=lead_name,
+            email=email,
+            phone_number=phone_number,
+            password=password,
+        )
+        db.session.add(user)  # Add employee to session
+        db.session.commit()  # Commit changes to database
+        return True
 
 
 # Function to check user credentials
@@ -139,7 +187,6 @@ def signup():
         email = request.form["email"]
         phone_number = request.form["phone_number"]
         password = request.form["password"]
-        option = request.form["options"]
 
         existing_user = (
             db.session.query(User)
@@ -153,18 +200,12 @@ def signup():
         if existing_user or existing_employee:
             flash("Email or phone number already exists!", "error")
             return redirect(url_for("signup"))
+        if not (8 <= len(password) <= 13):
+            flash("Password must be between 8 to 13 characters!", "error")
+            return redirect(url_for("signup"))
+
         else:
-            if (
-                (option == "admin" and not email.endswith("@marvel.com"))
-                or (option == "user" and email.endswith("@marvel.com"))
-                or (option == "manager" and not email.endswith("@manager.com"))
-                or (option == "user" and email.endswith("@manager.com"))
-            ):
-                flash(f"Invalid email for {option} option!", "error")
-            elif not (8 <= len(password) <= 13):
-                flash("Password must be between 8 to 13 characters!", "error")
-            elif option == "user":
-                save_user(lead_name, email, phone_number, password, option)
+            if save_user(lead_name, email, phone_number, password):
                 flash(
                     Markup(
                         'Account created! <a href="/login" style="color:green">Login</a> now'
@@ -172,22 +213,12 @@ def signup():
                     "success",
                 )
                 return redirect(url_for("signup"))
-            else:
-                if save_employee(lead_name, email, phone_number, password, option):
-                    flash(
-                        Markup(
-                            'Account created! <a href="/login" style="color:green">Login</a> now'
-                        ),
-                        "success",
-                    )
-                    return redirect(url_for("signup"))
 
         return render_template(
             "signup.html",
             lead_name=lead_name,
             email=email,
             phone_number=phone_number,
-            option=option,
         )
 
     return render_template("signup.html")
@@ -380,11 +411,13 @@ def login_admin():
         lead_name = session.get("lead_name")
         phone_number = session.get("phone_number")
         employees = Employee.query.all()
+        users = User.query.all()
         return render_template(
             "admin_page.html",
             lead_name=lead_name,
             phone_number=phone_number,
             employees=employees,
+            users=users,
         )
     return redirect(url_for("hello_world"))
 
@@ -414,66 +447,29 @@ def employees_add():
             password = request.form.get("password")
             option = request.form.get("option")
 
-            if option == "manager" and not email.endswith("@manager.com"):
-                flash("Invalid email for user option.")
+            if option != "user" and (
+                db.session.query(User).filter_by(email=email).first()
+                or db.session.query(Employee)
+                .filter_by(phone_number=phone_number)
+                .first()
+            ):
+                flash("User with this email or phone number already exists.")
                 return render_template("admin_add.html")
 
-            if option == "admin" and not email.endswith("@marvel.com"):
-                flash("Invalid email for user option.")
+            if len(phone_number) != 10 or not lead_name or not email or not password:
+                flash("Enter correct details to proceed.")
                 return render_template("admin_add.html")
 
-            if option == "user" and email.endswith("@gmail.com"):
-                if db.session.query(User).filter_by(email=email).first():
-                    flash("User with this email already exists.")
-                    return render_template("admin_add.html")
-                if db.session.query(User).filter_by(phone_number=phone_number).first():
-                    flash("User with this phone number already exists.")
-                    return render_template("admin_add.html")
-                if (
-                    db.session.query(Employee)
-                    .filter_by(phone_number=phone_number)
-                    .first()
-                ):
-                    flash("User with this phone number already exists.")
-                    return render_template("admin_add.html")
-                try:
+            try:
+                if option == "user":
                     user = User(
                         lead_name=lead_name,
                         email=email,
                         phone_number=phone_number,
                         password=password,
-                        option=option,
                     )
                     db.session.add(user)
-                    db.session.commit()
-                    flash("User added successfully.")
-                    return redirect(url_for("all_employees"))
-                except Exception as e:
-                    db.session.rollback()
-                    return render_template("admin_add.html")
-            else:
-                if (
-                    len(phone_number) != 10
-                    or not lead_name
-                    or not email
-                    or not password
-                ):
-                    flash("Enter correct details to proceed.")
-                    return render_template("admin_add.html")
-
-                if option == "admin" and not email.endswith("@marvel.com"):
-                    flash("Incorrect email for admin.")
-                    return render_template("admin_add.html")
-
-                if (
-                    db.session.query(Employee)
-                    .filter_by(phone_number=phone_number)
-                    .first()
-                ):
-                    flash("User with this phone number already exists.")
-                    return render_template("admin_add.html")
-
-                try:
+                else:
                     contact = Employee(
                         lead_name=lead_name,
                         email=email,
@@ -482,15 +478,21 @@ def employees_add():
                         option=option,
                     )
                     db.session.add(contact)
-                    db.session.commit()
-                    flash("User added successfully.")
-                    return redirect(url_for("all_employees"))
-                except Exception as e:
-                    db.session.rollback()
-                    flash(f"An error occurred: {str(e)}")
-                    return render_template("admin_add.html")
+                db.session.commit()
+                flash("User added successfully.")
+                return redirect(url_for("all_employees"))
+            except Exception as e:
+                db.session.rollback()
+                flash(f"An error occurred: {str(e)}")
+                return render_template("admin_add.html")
 
-        return render_template("admin_add.html")
+    return render_template("admin_add.html")
+
+
+@app.route("/admin/update/role", methods=["GET", "POST"])
+def select_role():
+    if session.get("user_option") == "admin":
+        return render_template("admin_select_role.html")
     return redirect(url_for("hello_world"))
 
 
@@ -538,6 +540,54 @@ def employees_update():
 
         return render_template(
             "update_employee.html", lead_name=lead_name, phone_number=phone_number
+        )
+    return redirect(url_for("hello_world"))
+
+
+# Route for admin's update page
+@app.route("/admin/update/user", methods=["GET", "POST"])
+def employees_update_users():
+    if session.get("user_option") == "admin":
+        lead_name = session.get("lead_name")
+        phone_number = session.get("phone_number")
+        if request.method == "POST":
+            id = request.form.get("id")
+            phone_number = request.form.get("phone_number")
+            email = request.form.get("email")
+            lead_name = request.form.get("lead_name")
+            option = request.form.get("option")
+
+            if not email and not lead_name and not option and not phone_number:
+                flash("Enter at least one field to proceed further.", "error")
+                return render_template("update_user.html")
+
+            users = db.session.query(User).filter_by(id=id).first()
+
+            if users:
+                if id:
+                    users.id = id
+                if email:
+                    users.email = email
+                if lead_name:
+                    users.lead_name = lead_name
+                if phone_number:
+                    users.phone_number = phone_number
+                if option:
+                    users.option = option
+
+                db.session.commit()
+                flash("User updated successfully.", "success")
+                return redirect(url_for("all_employees"))
+            else:
+                if id == "":
+                    flash("Please enter the users's ID.", "error")
+                    return render_template("update_employee.html")
+                else:
+                    flash("No users found with the provided ID.", "error")
+                    return render_template("update_employee.html")
+
+        return render_template(
+            "update_user.html", lead_name=lead_name, phone_number=phone_number
         )
     return redirect(url_for("hello_world"))
 
@@ -781,4 +831,6 @@ def page_not_found(e):
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
+        migrate_employee()
+        migrate_users()
         app.run()
