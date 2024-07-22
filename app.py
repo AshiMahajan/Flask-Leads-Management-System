@@ -42,7 +42,7 @@ def save_employee(lead_name, email, phone_number, password):
         lead_name=lead_name,
         email=email,
         phone_number=phone_number,
-        password=generate_password_hash(password),  # Hash the password
+        password=generate_password_hash(password),
         option="employee",
     )
     db.session.add(employee)
@@ -89,8 +89,6 @@ def migrate_employee():
 
 # Function to save user data to database
 def save_user(lead_name, email, phone_number, password):
-
-    # Check if email already exists in users table
     if User.query.filter_by(email=email).first():
         flash("Email already exists.", "error")
         return False
@@ -127,22 +125,19 @@ def save_user(lead_name, email, phone_number, password):
             phone_number=phone_number,
             password=password,
         )
-        db.session.add(user)  # Add employee to session
-        db.session.commit()  # Commit changes to database
+        db.session.add(user)
+        db.session.commit()
         return True
 
 
-# Function to check user credentials
 def check_user(email, password):
-    # Check if user exists in users table
     user = User.query.filter_by(email=email, password=password).first()
     if user:
-        return user.lead_name, user.option  # Return lead_name and option
-    # Check if user exists in employees table
+        return user.lead_name, user.option
     employee = Employee.query.filter_by(email=email, password=password).first()
     if employee:
-        return employee.lead_name, employee.option  # Return lead_name and option
-    return None, None  # Return None if user not found
+        return employee.lead_name, employee.option
+    return None, None
 
 
 # Function to control caching behavior
@@ -467,8 +462,33 @@ def login_admin_users():
             users=users,
             users_total=users_total,
         )
-    return redirect(url_for("simple_page.home"))
+    # return redirect(url_for("simple_page.home"))
+    return redirect(url_for("home"))
 
+    
+"""
+def login_admin_users():
+    if session.get("user_option") == "admin":
+        lead_name = session.get("lead_name")
+        phone_number = session.get("phone_number")
+
+        page = request.args.get("page", 1, type=int)
+        per_page = 10
+
+        users = User.query.paginate(page=page, per_page=per_page)
+
+        users_total = db.session.query(User).count()
+        return render_template(
+            "/admin/admin_user_page.html",
+            lead_name=lead_name,
+            phone_number=phone_number,
+            page=page,
+            per_page=per_page,
+            users=users,
+            users_total=users_total,
+        )
+    return redirect(url_for("simple_page.home"))
+"""
 
 # Function to display flash message
 def all_employees():
@@ -1056,9 +1076,10 @@ def logout():
     return render_template("logout.html")
 
 
-# Function for error handler (404 not found)
+# 404 error handler
+@app.errorhandler(404)
 def page_not_found(e):
-    return render_template("simple_page.404.html")
+    return render_template("404.html")
 
 
 # Run the app

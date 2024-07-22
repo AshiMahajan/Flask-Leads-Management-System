@@ -224,7 +224,7 @@
               </tr>
             </thead>
             <tbody>
-              {% for employee in emp_total %}
+              {% for employee in employees %}
               <tr>
                 <td>{{ employee.id }}</td>
                 <td>{{ employee.lead_name }}</td>
@@ -434,13 +434,13 @@
           {% if emp_total|length > 0 %} 
               <div style="margin-top: 2%">
                 {% if employees.has_prev %}
-                <a href="{{ url_for('simple_page.login_admin', page=employees.prev_num) }}"
+                <a href="{{ url_for('simple_page.employees_display', page=employees.prev_num) }}"
                   >Previous</a
                 >
                 {% endif %}
                 <span>Page {{ employees.page }} of {{ employees.pages }}</span>
                 {% if employees.has_next %}
-                <a href="{{ url_for('simple_page.login_admin', page=employees.next_num) }}"
+                <a href="{{ url_for('simple_page.employees_display', page=employees.next_num) }}"
                   >Next</a
                 >
               </div>

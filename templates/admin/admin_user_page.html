@@ -232,7 +232,7 @@
               </tr>
             </thead>
             <tbody>
-              {% for user in users_total %}
+              {% for user in users %}
               <tr>
                 <td>{{ user.id }}</td>
                 <td>{{ user.lead_name }}</td>
@@ -464,14 +464,14 @@
           <div style="margin-top: 2%">
             {% if users.has_prev %}
             <a
-              href="{{ url_for('simple_page.login_admin_users', page_2=users.prev_num) }}"
+              href="{{ url_for('simple_page.users_display', page_2=users.prev_num) }}"
               >Previous</a
             >
             {% endif %}
             <span>Page {{ users.page }} of {{ users.pages }}</span>
             {% if users.has_next %}
             <a
-              href="{{ url_for('simple_page.login_admin_users', page_2=users.next_num) }}"
+              href="{{ url_for('simple_page.users_display', page_2=users.next_num) }}"
               >Next</a
             >
           </div>
