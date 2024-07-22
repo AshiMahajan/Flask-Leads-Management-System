@@ -435,13 +435,32 @@
               <div style="margin-top: 2%">
                 {% if employees.has_prev %}
                 <a href="{{ url_for('simple_page.employees_display', page=employees.prev_num) }}"
-                  >Previous</a
+                style="
+                background-color: #ff0000c9;
+                color: #00ffcb;
+                padding: 5px;
+                box-sizing: border-box;
+                border-radius: 20px;
+                font-size: 16px;
+                font-style: oblique;
+              "
+                  >&lt;&lt;</a
                 >
                 {% endif %}
-                <span>Page {{ employees.page }} of {{ employees.pages }}</span>
+                <span style="font-size: 16px;
+                font-style: oblique; margin-right: 15px;">Page {{ employees.page }} of {{ employees.pages }}</span>
                 {% if employees.has_next %}
                 <a href="{{ url_for('simple_page.employees_display', page=employees.next_num) }}"
-                  >Next</a
+                style="
+                background-color: #ff0000c9;
+                color: #00ffcb;
+                padding: 5px;
+                box-sizing: border-box;
+                border-radius: 20px;
+                font-size: 16px;
+                font-style: oblique;
+              "
+                  >&gt;&gt;</a
                 >
               </div>
               {% endif %} {% endif %}
