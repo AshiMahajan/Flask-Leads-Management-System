@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask import Blueprint
 
 app = Flask(__name__)
@@ -181,6 +181,7 @@ def view_all_queries():
     return all_queries()
 
 
+# Route to reset password
 @simple_page.route("/login/user/reset_pwd", methods=["GET", "POST"])
 def reset_pwd():
     from app import reset
@@ -188,18 +189,12 @@ def reset_pwd():
     return reset()
 
 
+# Route for forgot password
 @simple_page.route("/login/forgot_password", methods=["GET", "POST"])
 def forgot_pwd():
     from app import forgot_password
 
     return forgot_password()
-
-
-@simple_page.errorhandler(404)
-def page_error(e):
-    from app import page_not_found
-
-    return page_not_found(e)
 
 
 # Route for logout
