@@ -1,0 +1,17 @@
+{% extends "manager/manager.html" %} {% block title %}Management{% endblock %}
+{% block content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+  {% for message in messages %}
+    <p style="color: #DC2626;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    margin-top: 27%;
+    margin-left: 27%;">{{ message }}</p>
+  {% endfor %}
+{% endif %}
+{% endwith %}
+{% endblock %}
+</body>
+</html>

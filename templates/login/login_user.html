@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<script>
+  function showResetPopup(id, lead_name, service, query, status) {
+    document.getElementById("popup_3").style.display = "block";
+  }
+
+  function closeResetPopup() {
+    document.getElementById("popup_3").style.display = "none";
+  }
+</script>
+
+<html>
+  <head>
+    <link
+      href="{{url_for('static',filename='css/output.css')}}"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <title>User</title>
+  </head>
+  <style>
+    body {
+      background-image: url("{{url_for('static',filename='css/login_pg.png')}}");
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+    }
+    #popup_3 {
+      background: rgb(229 229 229);
+      border-radius: 7px;
+      position: absolute;
+      width: 27%;
+      height: 330px;
+      text-align: center;
+    }
+  </style>
+  <body class="h-screen bg-ima">
+    <div class="flex h-screen justify-between items-center">
+      <div class="text-white font-bold p-4 rounded ml-12">
+        <h4 class="text-3xl ml-16 mb-4">Welcome</h4>
+        <h1 class="text-5xl ml-28 italic">{{ lead_name }}</h1>
+      </div>
+      <div
+        class="mr-32 text-2xl gap-8 flex flex-col justify-center items-center bg-white shadow-md box-border border-solid rounded-xl mx-2 p-28"
+      >
+        <button
+          onclick="window.location.href='/your_details'"
+          class="text-gray-700 font-bold py-2 px-4 rounded mb-4"
+        >
+          Track Your Details
+        </button>
+        <p class="text-red-600 text-center font-bold text-base">
+          {% with messages = get_flashed_messages() %} {% if messages %} {% for
+          message in messages %} {{ message }} {% endfor %} {% endif %} {%
+          endwith %}
+        </p>
+        <button
+          onclick="window.location.href='/login/user/contact_us'"
+          class="text-gray-700 font-bold py-2 px-4 rounded mb-4"
+        >
+          Contact Us
+        </button>
+        <button
+          onclick="showResetPopup()"
+          class="text-red-500 font-bold py-2 px-4 rounded mb-4"
+        >
+          Reset Password
+        </button>
+        <!-- <span>
+          <button
+            class="close-btn"
+            onclick="closeResetPopup()"
+            style="
+              align-self: self-end;
+              position: absolute;
+              margin-top: -340px;
+              margin-left: 12%;
+              width: 35px;
+            "
+          >
+            <img src="{{ url_for('static', filename='css/cross.png') }}" />
+          </button>
+        </span> -->
+        <span id="popup_3" style="display: none">
+          <form
+            style="margin-top: 11%"
+            action="/login/user/reset_pwd"
+            method="POST"
+          >
+            <label for="password" style="font-size: 15px"
+              >Enter New Password</label
+            >
+            <input
+              style="
+                background-color: #bebebe;
+                margin-bottom: 10%;
+                margin-top: 3%;
+              "
+              type="password"
+              id="password"
+              name="password"
+            />
+            <br />
+            <label for="confirm_password" style="font-size: 15px"
+              >Confirm New Password</label
+            >
+            <input
+              style="background-color: #bebebe; margin-top: 3%"
+              type="password"
+              id="confirm_password"
+              name="confirm_password"
+            />
+            <br />
+            <button type="submit" style="margin-top: 10%; font-size: 20px">
+              Submit
+            </button>
+          </form>
+        </span>
+      </div>
+    </div>
+  </body>
+</html>

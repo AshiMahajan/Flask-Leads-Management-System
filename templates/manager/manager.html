@@ -31,6 +31,12 @@
   </head>
   <body>
     <div class="flex h-screen">
+      <button
+        onclick="window.location.href='/login/manager'"
+        style="position: absolute; width: 35px; margin-left: 1%; margin-top: 1%"
+      >
+        <img src="{{ url_for('static', filename='css/home.png') }}" />
+      </button>
       <div
         class="w-1/4 items-stretch p-20 flex flex-col space-y-4"
         style="background-image: linear-gradient(46deg, #0d00ff, #a53131)"
@@ -39,7 +45,7 @@
         <button
           id="dashboard_button"
           type="submit"
-          onclick="window.location.href='/login/manager'"
+          onclick="window.location.href='/login/manager/all_queries'"
           class="text-white"
           style="
             background-color: #ef9f09;
@@ -55,17 +61,17 @@
         <button
           type="submit"
           id="all_button"
-          onclick="window.location.href='/manager/all_leads'"
+          onclick="window.location.href='/manager/all_leads/add'"
           class="text-white"
           style="
-            background-color: #ef9f09;
+            background-color: #9f9f9f;
             width: 120%;
             border-radius: 3px;
             margin-left: -40px;
             font-size: 20px;
           "
         >
-          All
+          Add
         </button>
         <button
           id="logout_button"
@@ -126,26 +132,6 @@
           <td>{{ declined_leads }}</td>
         </tr>
       </table>
-      <button
-        id="all_queries"
-        type="button"
-        onclick="window.location.href='/login/manager/all_queries'"
-        style="
-          background-color: rgb(143, 193, 193);
-          border-radius: 3px;
-          font-variant: all-petite-caps;
-          font-size: 20px;
-          height: 5%;
-          position: relative;
-          margin-top: 620px;
-          margin-left: -250px;
-          display: flex;
-          flex-direction: row;
-          width: auto;
-        "
-      >
-        All Queries
-      </button>
       {% endblock %}
     </div>
   </body>

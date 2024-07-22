@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="{{ url_for('static', filename='css/output.css') }}"
+      rel="stylesheet"
+    />
+    <script>
+      function showDashboardPopup() {
+        document.getElementById("popup").style.display = "block";
+      }
+      function showUserPopup(id, lead_name, email, phone_number, option) {
+        document.getElementById("popup_2").style.display = "block";
+        document.getElementById("id").value = id;
+        document.getElementById("lead_name").value = lead_name;
+        document.getElementById("email").value = email;
+        document.getElementById("phone_number").value = phone_number;
+
+        if (option === "user") {
+          document.getElementById("option2").checked = true;
+        } else if (option === "admin") {
+          document.getElementById("option1").checked = true;
+        } else if (option === "manager") {
+          document.getElementById("option3").checked = true;
+        }
+      }
+
+      function closeUserPopup() {
+        document.getElementById("popup_2").style.display = "none";
+      }
+      function closeDashboardPopup() {
+        document.getElementById("popup").style.display = "none";
+      }
+    </script>
+    <style>
+      #popup {
+        width: auto;
+        font-size: 15px;
+        border-radius: 3px;
+        margin-top: -2.4%;
+        position: absolute;
+        margin-left: 17%;
+      }
+      #popup_2 {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        width: 60%;
+        align-items: center;
+        margin-left: 12%;
+        background: rgb(0, 174, 255);
+        border-radius: 7px;
+      }
+      table {
+        width: 100%;
+        margin-top: 20px;
+        text-align-last: center;
+        font-size: 18px;
+        background-color: #3cc2ff14;
+      }
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+      }
+      th {
+        background-color: #f8f9fa;
+      }
+      #emp_info {
+        text-align: center;
+        font-size: 15px;
+        font-style: italic;
+      }
+      .container {
+        margin-top: 5%;
+        text-align: center;
+        width: 100%;
+      }
+      #dashboard_button,
+      #all_button {
+        opacity: 0.8;
+        font-variant-caps: all-petite-caps;
+      }
+      #dashboard_button:hover,
+      #all_button:hover {
+        opacity: 1;
+        font-variant: small-caps;
+      }
+      #logout {
+        opacity: 0.8;
+        transition: transform 1s;
+      }
+      #logout_button:hover {
+        opacity: 1;
+        transform: scale(1.12);
+      }
+      .emp_user_info {
+        display: flex;
+        width: 75%;
+        flex-direction: column;
+      }
+    </style>
+    <script>
+      function showPopup() {
+        document.getElementById("popup").style.display = "block";
+      }
+    </script>
+    <title>Admin</title>
+  </head>
+  <body>
+    <div class="flex h-screen">
+      <button
+        onclick="window.location.href='/login/admin'"
+        style="position: absolute; width: 35px; margin-left: 1%; margin-top: 1%"
+      >
+        <img src="{{ url_for('static', filename='css/home.png') }}" />
+      </button>
+      <div
+        class="w-1/4 items-stretch p-20 flex flex-col space-y-4"
+        style="background-image: linear-gradient(46deg, #0d00ff, #a53131)"
+      >
+        <button
+          id="dashboard_button"
+          type="button"
+          onclick="showPopup()"
+          onclick="window.location.href='/login/option'"
+          class="text-white"
+          style="
+            background-color: #ef9f09;
+            width: 120%;
+            margin-left: -40px;
+            font-size: 20px;
+            border-radius: 3px;
+          "
+        >
+          Dashboard
+        </button>
+        <div id="popup" style="display: none">
+          <div
+            style="
+              background-color: #f9f9f9;
+              padding: 17px;
+              border: 1px solid #ccc;
+              -webkit-box-align: end;
+              border-radius: 3px;
+              display: flex;
+              flex-direction: column;
+              background-image: linear-gradient(233deg, #ececec, #332e2ee3);
+            "
+          >
+            <button
+              onclick="window.location.href='/login/admin/users'"
+              style="
+                font-size: 18px;
+                padding: 5px;
+                font-variant: all-petite-caps;
+              "
+            >
+              Users
+            </button>
+            <span onclick="closeDashboardPopup()"
+              ><img
+                src="{{ url_for('static', filename='css/arrow_back.png') }}"
+                style="
+                  position: absolute;
+                  cursor: pointer;
+                  width: 25%;
+                  margin-top: -12%;
+                  margin-left: 73%;
+                "
+            /></span>
+            <button
+              onclick="window.location.href='/login/admin/employee'"
+              style="
+                font-size: 18px;
+                padding: 5px;
+                font-variant: all-petite-caps;
+              "
+            >
+              Employees
+            </button>
+          </div>
+        </div>
+        <button
+          type="button"
+          id="all_button"
+          onclick="window.location.href='/admin/add'"
+          class="text-white"
+          style="
+            background-color: #9f9f9f;
+            width: 120%;
+            border-radius: 3px;
+            margin-left: -40px;
+            font-size: 20px;
+          "
+        >
+          Add
+        </button>
+        <button
+          id="logout_button"
+          type="button"
+          onclick="window.location.href='/logout'"
+          style="
+            background-color: darkgray;
+            border-radius: 3px;
+            width: 120%;
+            font-variant: all-petite-caps;
+            margin-left: -40px;
+            font-size: 20px;
+            margin-top: 500px;
+          "
+        >
+          Logout
+        </button>
+      </div>
+      <div class="emp_user_info">
+        {% if users_total %}
+        <div class="container">
+          <h1 id="emp_info">User Information</h1>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Role</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for user in users_total %}
+              <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.lead_name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phone_number }}</td>
+                <td>{{ user.option }}</td>
+                <span>
+                  <td style="text-align: -webkit-center">
+                    <a
+                      onclick="showUserPopup('{{ user.id }}', '{{ user.lead_name }}', '{{ user.email }}', '{{ user.phone_number }}', '{{ user.option }}')"
+                      style="cursor: pointer; display: flex; width: 30%"
+                      ><img
+                        src="{{ url_for('static', filename='css/edit.png') }}"
+                    /></a>
+                  </td>
+                  <!--  -->
+                  <div id="popup_2" style="display: none">
+                    <div id="popup_2">
+                      <style>
+                        #form_hover_update:hover {
+                          box-shadow: 0px 0px 20px rgb(138, 138, 138);
+                        }
+                        #update_submit {
+                          opacity: 0.8;
+                          transition: transform 1s;
+                        }
+                        #update_submit:hover {
+                          opacity: 1;
+                          transform: scale(1.12);
+                        }
+                      </style>
+                      <span
+                        onclick="closeUserPopup()"
+                        style="
+                          align-self: self-end;
+                          position: absolute;
+                          margin-top: -17px;
+                          margin-right: -17px;
+                          width: 35px;
+                          cursor: pointer;
+                        "
+                      >
+                        <img
+                          src="{{ url_for('static', filename='css/cross.png') }}"
+                        />
+                      </span>
+                      <form
+                        action="/admin/update/user"
+                        id="form_hover_update"
+                        method="post"
+                        class="flex flex-col w-3/4 items-center self-center h-auto"
+                      >
+                        <label for="id" style="margin-top: 7%"
+                          >Enter User's ID</label
+                        >
+                        <input
+                          type="text"
+                          id="id"
+                          name="id"
+                          placeholder="..."
+                          readonly
+                          style="
+                            background-color: aquamarine;
+                            border-radius: 3px;
+                            font-size: 15px;
+                            width: 65%;
+                            height: 25px;
+                            margin-top: 15px;
+                            text-align: center;
+                          "
+                        />
+                        <br />
+
+                        <label for="lead_name" style="margin-bottom: 16px"
+                          >Name:</label
+                        >
+                        <input
+                          type="text"
+                          id="lead_name"
+                          name="lead_name"
+                          value="{{user.lead_name}}"
+                          placeholder="abc"
+                          style="
+                            border-radius: 3px;
+                            font-size: 15px;
+                            width: 65%;
+                            height: 25px;
+                            margin-top: 15px;
+                            text-align: center;
+                          "
+                        />
+                        <br />
+
+                        <label for="email" style="margin-top: 16px"
+                          >Email:</label
+                        >
+                        <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          value="{{user.email}}"
+                          placeholder="abc@xyz.com"
+                          style="
+                            border-radius: 3px;
+                            font-size: 15px;
+                            width: 65%;
+                            height: 25px;
+                            margin-top: 15px;
+                            text-align: center;
+                          "
+                        />
+                        <br />
+                        <label for="phone_number" style="margin-top: 16px"
+                          >Phone Number:</label
+                        >
+                        <input
+                          type="text"
+                          id="phone_number"
+                          name="phone_number"
+                          value="{{user.phone_number}}"
+                          placeholder="..."
+                          style="
+                            border-radius: 3px;
+                            font-size: 15px;
+                            width: 65%;
+                            height: 25px;
+                            margin-top: 15px;
+                            text-align: center;
+                          "
+                        />
+                        <br />
+
+                        <label
+                          for="option"
+                          style="margin-top: 16px; margin-bottom: 16px"
+                          >Option:</label
+                        >
+                        <div
+                          style="
+                            margin-top: 2%;
+                            font-size: 15px;
+                            display: flex;
+                            flex-direction: row;
+                            gap: 10px;
+                          "
+                        >
+                          <input
+                            type="radio"
+                            name="option"
+                            id="option2"
+                            value="user"
+                          />
+                          User
+                          <input
+                            type="radio"
+                            name="option"
+                            id="option1"
+                            value="admin"
+                          />
+                          Admin
+                          <input
+                            type="radio"
+                            name="option"
+                            id="option3"
+                            value="manager"
+                          />
+                          Manager
+                        </div>
+                        <span onclick="warningPopup()">
+                          {% with messages = get_flashed_messages() %} {% if
+                          messages %} {% for message in messages %}
+                          <p
+                            style="
+                              color: #dc2626;
+                              margin-bottom: 1rem;
+                              font-size: 0.875rem;
+                              line-height: 1.25rem;
+                            "
+                          >
+                            {{ message }}
+                          </p>
+                          {% endfor %} {% endif %} {% endwith %}
+                        </span>
+                        <button
+                          type="submit"
+                          id="update_submit"
+                          style="
+                            margin-bottom: 7%;
+                            margin-top: 5%;
+                            background-color: #003f8d;
+                            border-radius: 5px;
+                            width: 20%;
+                            font-size: 18px;
+                            color: cornsilk;
+                          "
+                        >
+                          Update
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                  <!--  -->
+                  <td style="text-align: -webkit-center">
+                    <a
+                      href="{{ url_for('simple_page.delete_an_user', id=user.id) }}"
+                      style="display: flex; width: 30%"
+                      ><img
+                        src="{{ url_for('static', filename='css/delete.png') }}"
+                    /></a>
+                  </td>
+                </span>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p
+            style="
+              display: flex;
+              color: #dc2626;
+              height: 100%;
+              align-self: center;
+              margin-top: 30%;
+            "
+          >
+            No user found.
+          </p>
+          {% endif %} {% if users_total %} {% if users_total|length > 0 %}
+          <div style="margin-top: 2%">
+            {% if users.has_prev %}
+            <a
+              href="{{ url_for('simple_page.login_admin_users', page_2=users.prev_num) }}"
+              >Previous</a
+            >
+            {% endif %}
+            <span>Page {{ users.page }} of {{ users.pages }}</span>
+            {% if users.has_next %}
+            <a
+              href="{{ url_for('simple_page.login_admin_users', page_2=users.next_num) }}"
+              >Next</a
+            >
+          </div>
+          {% endif %} {% endif %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+{% extends "manager/manager.html" %} {% block title %}Management{% endblock %}
+    
+{% block content %}
+<style>
+  #buttons_for_dashboard{
+    opacity: 0.88;
+  }
+  #buttons_for_dashboard:hover{
+    opacity: 1;
+    font-style: oblique;
+  }
+</style>
+<div class="w-3/4 flex flex-col justify-center items-center h-full" style="gap: 40px;">
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for
+      message in messages %} {{ message }} {% endfor %} {% endif %} {% endwith %}
+    </div>
+    {%endblock%}
+</body>
+</html>

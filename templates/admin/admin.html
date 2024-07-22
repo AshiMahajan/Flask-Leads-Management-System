@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="{{ url_for('static', filename='css/output.css') }}"
+      rel="stylesheet"
+    />
+    <script>
+      function showDashboardPopup() {
+        document.getElementById("popup").style.display = "block";
+      }
+      function closeDashboardPopup() {
+        document.getElementById("popup").style.display = "none";
+      }
+    </script>
+    <style>
+      #popup {
+        width: auto;
+        font-size: 15px;
+        border-radius: 3px;
+        margin-top: -2.4%;
+        position: absolute;
+        margin-left: 17%;
+      }
+      table {
+        width: 100%;
+        margin-top: 20px;
+        text-align-last: center;
+        font-size: 18px;
+        /* background-color: #3cc2ff14; */
+      }
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+      }
+      th {
+        background-color: #f8f9fa;
+      }
+      #emp_info {
+        text-align: center;
+        font-size: 15px;
+        font-style: italic;
+      }
+      .container {
+        margin-top: 5%;
+        text-align: center;
+        width: 100%;
+      }
+      #dashboard_button,
+      #all_button {
+        opacity: 0.8;
+        font-variant-caps: all-petite-caps;
+      }
+      #dashboard_button:hover,
+      #all_button:hover {
+        opacity: 1;
+        font-variant: small-caps;
+      }
+      #logout {
+        opacity: 0.8;
+        transition: transform 1s;
+      }
+      #logout_button:hover {
+        opacity: 1;
+        transform: scale(1.12);
+      }
+      .emp_user_info {
+        display: flex;
+        width: 75%;
+        flex-direction: column;
+      }
+    </style>
+    <title>Admin</title>
+  </head>
+  <body>
+    <div class="flex h-screen">
+      <button
+        onclick="window.location.href='/login/admin'"
+        style="position: absolute; width: 35px; margin-left: 1%; margin-top: 1%"
+      >
+        <img src="{{ url_for('static', filename='css/home.png') }}" />
+      </button>
+      <div
+        class="w-1/4 items-stretch p-20 flex flex-col space-y-4"
+        style="background-image: linear-gradient(46deg, #0d00ff, #a53131)"
+      >
+        <button
+          id="dashboard_button"
+          type="button"
+          onclick="showDashboardPopup()"
+          onclick="window.location.href='/login/option'"
+          class="text-white"
+          style="
+            background-color: #ef9f09;
+            width: 120%;
+            margin-left: -40px;
+            font-size: 20px;
+            border-radius: 3px;
+          "
+        >
+          Dashboard
+        </button>
+        <div id="popup" style="display: none">
+          <div
+            style="
+              background-color: #f9f9f9;
+              padding: 17px;
+              border: 1px solid #ccc;
+              -webkit-box-align: end;
+              border-radius: 3px;
+              display: flex;
+              flex-direction: column;
+              background-image: linear-gradient(233deg, #ececec, #332e2ee3);
+            "
+          >
+            <button
+              onclick="window.location.href='/login/admin/users'"
+              style="
+                font-size: 18px;
+                padding: 5px;
+                font-variant: all-petite-caps;
+              "
+            >
+              Users
+            </button>
+            <span onclick="closeDashboardPopup()"
+              ><img
+                src="{{ url_for('static', filename='css/arrow_back.png') }}"
+                style="
+                  position: absolute;
+                  cursor: pointer;
+                  width: 25%;
+                  margin-top: -12%;
+                  margin-left: 73%;
+                "
+            /></span>
+            <button
+              onclick="window.location.href='/login/admin/employee'"
+              style="
+                font-size: 18px;
+                padding: 5px;
+                font-variant: all-petite-caps;
+              "
+            >
+              Employees
+            </button>
+          </div>
+        </div>
+        <button
+          type="button"
+          id="all_button"
+          onclick="window.location.href='/admin/add'"
+          class="text-white"
+          style="
+            background-color: #9f9f9f;
+            width: 120%;
+            border-radius: 3px;
+            margin-left: -40px;
+            font-size: 20px;
+          "
+        >
+          Add
+        </button>
+        <button
+          id="logout_button"
+          type="button"
+          onclick="window.location.href='/logout'"
+          style="
+            background-color: darkgray;
+            border-radius: 3px;
+            width: 120%;
+            font-variant: all-petite-caps;
+            margin-left: -40px;
+            font-size: 20px;
+            margin-top: 500px;
+          "
+        >
+          Logout
+        </button>
+      </div>
+      {% block content %}
+      <div
+        class="flex h-screen flex-col w-3/4 text-center justify-center items-center"
+      >
+        <div
+          class="text-black font-bold p-4 rounded ml-12 flex flex-col self-start h-auto m-t"
+        >
+          <h4
+            class="text-3xl ml-16 mb-4"
+            style="
+              margin-top: -90%;
+              font-size: 28px;
+              font-variant: petite-caps;
+              margin-left: 5%;
+            "
+          >
+            Welcome,
+          </h4>
+          <h1
+            class="text-5xl ml-28 italic"
+            style="margin-top: 2%; font-size: 30px; margin-left: 55%"
+          >
+            {{ lead_name }}
+          </h1>
+        </div>
+        <table
+          style="
+            box-sizing: border-box;
+            height: 30%;
+            font-size: 20px;
+            width: 30%;
+            font-style: italic;
+            font-variant: petite-caps;
+          "
+        >
+          <tr>
+            <td>Total Users</td>
+            <td>{{ total_users_registered }}</td>
+          </tr>
+          <tr>
+            <td>Total Employees</td>
+            <td>{{ total_employees }}</td>
+          </tr>
+        </table>
+      </div>
+      {% endblock %}
+    </div>
+  </body>
+</html>

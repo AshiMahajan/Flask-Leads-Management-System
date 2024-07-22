@@ -1,0 +1,149 @@
+{% extends "signup.html" %} {% block title %}Login{% endblock %} {% block
+content %}
+<script>
+  function showForgotPopup(lead_name, email, phone_number) {
+    document.getElementById("popup_4").style.display = "block";
+  }
+
+  function closeForgotPopup() {
+    document.getElementById("popup_4").style.display = "none";
+  }
+</script>
+<style>
+  #popup_4 {
+    background: rgb(229 229 229);
+    border-radius: 7px;
+    position: absolute;
+    width: 27%;
+    height: 326px;
+    text-align: center;
+    margin-left: 57%;
+  }
+  #forgot_button {
+    transition: transform 0.5s;
+    background-color: rgba(184, 184, 184, 0.916);
+  }
+  #forgot_button:hover {
+    background-color: rgb(170, 170, 170);
+    transform: scale(1.1);
+  }
+  input {
+    width: 80%;
+    text-align: center;
+  }
+</style>
+<form
+  action="/login"
+  method="post"
+  class="flex flex-col w-5/12 mr-12 items-center text-2xl bg-white rounded-xl font-bold text-gray-700"
+  style="height: auto; width: 33%; margin-right: 13%"
+>
+  <label
+    for="email"
+    style="margin-top: 10%; display: flex; flex-direction: column"
+    >Email:</label
+  >
+  <input
+    type="text"
+    id="email"
+    name="email"
+    class="text-center placeholder-gray-500 border border-gray-400"
+    style="
+      margin-top: 15px;
+      border-radius: 3px;
+      font-size: 15px;
+      width: 65%;
+      height: 25px;
+    "
+    placeholder="abc@xyz.com"
+  /><br />
+  <label for="password">Password:</label>
+  <input
+    type="password"
+    id="password"
+    name="password"
+    class="text-center placeholder-gray-500 border border-gray-400"
+    style="
+      margin-top: 15px;
+      border-radius: 3px;
+      font-size: 15px;
+      width: 65%;
+      height: 25px;
+    "
+    placeholder="********"
+  /><br />
+  <p class="text-red-600 text-sm mb-4">
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for
+    message in messages %} {{ message }} {% endfor %} {% endif %} {% endwith %}
+  </p>
+  <button type="submit" class="mb-7">Login</button>
+</form>
+<button
+  onclick="showForgotPopup()"
+  id="forgot_button"
+  style="
+    position: absolute;
+    color: rgb(36, 31, 21);
+    margin-top: 28%;
+    margin-left: 63%;
+    border-radius: 2px;
+    padding: 3px;
+    font-size: 17px;
+    width: 16%;
+  "
+  class="mb-7"
+>
+  Forgot Password ?
+</button>
+<span id="popup_4" style="display: none">
+  <span>
+    <button
+      class="close-btn"
+      onclick="closeForgotPopup()"
+      style="
+        align-self: self-end;
+        position: absolute;
+        margin-top: -17px;
+        margin-left: 46%;
+        width: 35px;
+      "
+    >
+      <img src="{{ url_for('static', filename='css/cross.png') }}" />
+    </button>
+  </span>
+  <form style="margin-top: 6%" action="/login/forgot_password" method="POST">
+    <label for="lead_name" style="font-size: 15px">Enter your Name</label>
+    <br />
+    <input
+      style="background-color: #bebebe; margin-bottom: 6%; margin-top: 3%"
+      type="text"
+      id="lead_name"
+      name="lead_name"
+    />
+    <br />
+    <label for="phone_number" style="font-size: 15px"
+      >Enter your Phone Number</label
+    >
+    <br />
+    <input
+      style="background-color: #bebebe; margin-bottom: 6%; margin-top: 3%"
+      type="text"
+      id="phone_number"
+      name="phone_number"
+    />
+    <br />
+    <label for="email" style="font-size: 15px">Enter your Email address</label>
+    <br />
+    <input
+      style="background-color: #bebebe; margin-bottom: 6%"
+      type="email"
+      id="email"
+      name="email"
+    />
+    <br />
+    <button type="submit" style="margin-top: 6%; font-size: 20px">
+      Submit
+    </button>
+  </form>
+</span>
+{% endblock %}

@@ -1,8 +1,8 @@
-{% extends "contact_us.html" %}
+{% extends "contact_us/contact_us.html" %}
 
 {% block content %}
 <form
-  action="{{ url_for('contact_us_for_signedup') }}"
+  action="{{ url_for('simple_page.contact_us_form_after_login') }}"
   method="post"
   class="flex flex-col w-5/12 mr-12 items-center text-2xl bg-white rounded-xl font-bold text-gray-700"
 >

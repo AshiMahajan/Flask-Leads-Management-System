@@ -1,16 +1,47 @@
-{% extends "admin_page.html" %} {% block title %}Admin Add{% endblock %} {%
+{% extends "/admin/admin.html" %} {% block title %}Admin Add{% endblock %} {%
 block content %}
 <style>
-  #form_hover_update:hover {
-    box-shadow: 0px 0px 20px rgb(138, 138, 138);
+  .error-message {
+    color: #ef4444;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-weight: bold;
   }
   #update_submit {
-    opacity: 0.8;
-    transition: transform 1s;
+    padding: 0.75rem 1.5rem;
+    color: #ffffff;
+    background-color: #2563eb;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 2%;
   }
+
   #update_submit:hover {
-    opacity: 1;
-    transform: scale(1.12);
+    background-color: #1d4ed8;
+  }
+  .form_hover_update-label {
+    margin-bottom: 0.5rem;
+  }
+
+  .form_hover_update-input {
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    width: 65%;
+    height: 2.5rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    text-align: center;
+    border: 1px solid #d1d5db;
+    background-color: #f9fafb;
+    transition: all 0.3s ease;
+  }
+
+  .form_hover_update-input:focus {
+    outline: none;
+    border-color: #2563eb;
+    background-color: #ffffff;
   }
 </style>
 
@@ -20,13 +51,14 @@ block content %}
   method="post"
   class="flex flex-col w-3/4 items-center self-center h-auto"
   style="
-    width: 40%;
+    padding: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 35%;
+    background: rgb(0, 174, 255);
     font-size: 1.25rem;
     line-height: 1.75rem;
     align-self: center;
-    background-color: rgba(110, 141, 132, 0.507);
-    margin-left: 10rem;
-    color: rgb(55 65 81);
+    margin-left: 16rem;
     border-radius: 24px;
     box-sizing: border-box;
     border: solid;
@@ -114,34 +146,10 @@ block content %}
     <input type="radio" name="option" id="option1" value="admin" /> Admin
     <input type="radio" name="option" id="option3" value="manager" /> Manager
   </div>
-
-  {% with messages = get_flashed_messages() %} {% if messages %} {% for message
-  in messages %}
-  <p
-    style="
-      color: #dc2626;
-      margin-bottom: 1rem;
-      font-size: 0.875rem;
-      line-height: 1.25rem;
-    "
-  >
-    {{ message }}
+  <p class="error-message">
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for
+    message in messages %} {{ message }} {% endfor %} {% endif %} {% endwith %}
   </p>
-  {% endfor %} {% endif %} {% endwith %}
-
-  <button
-    type="submit"
-    id="update_submit"
-    style="
-      margin-bottom: 16px;
-      margin-top: 5%;
-      background-color: cornflowerblue;
-      width: 20%;
-      font-size: 18px;
-      color: cornsilk;
-    "
-  >
-    Submit
-  </button>
+  <button type="submit" id="update_submit">Submit</button>
 </form>
 {% endblock %}
