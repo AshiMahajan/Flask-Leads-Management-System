@@ -465,30 +465,6 @@ def login_admin_users():
     # return redirect(url_for("simple_page.home"))
     return redirect(url_for("home"))
 
-    
-"""
-def login_admin_users():
-    if session.get("user_option") == "admin":
-        lead_name = session.get("lead_name")
-        phone_number = session.get("phone_number")
-
-        page = request.args.get("page", 1, type=int)
-        per_page = 10
-
-        users = User.query.paginate(page=page, per_page=per_page)
-
-        users_total = db.session.query(User).count()
-        return render_template(
-            "/admin/admin_user_page.html",
-            lead_name=lead_name,
-            phone_number=phone_number,
-            page=page,
-            per_page=per_page,
-            users=users,
-            users_total=users_total,
-        )
-    return redirect(url_for("simple_page.home"))
-"""
 
 # Function to display flash message
 def all_employees():
@@ -615,6 +591,14 @@ def employees_update():
                 return redirect(url_for("simple_page.flash_message"))
 
             if option == "manager" and not email.endswith("@manager.com"):
+                flash("Enter correct email.", "error")
+                return redirect(url_for("simple_page.flash_message"))
+
+            if option == "admin" and not email.endswith("@admin.com"):
+                flash("Enter correct email.", "error")
+                return redirect(url_for("simple_page.flash_message"))
+
+            if option == "user" and not email.endswith("@gmail.com"):
                 flash("Enter correct email.", "error")
                 return redirect(url_for("simple_page.flash_message"))
 
@@ -750,17 +734,23 @@ def employees_update_users():
 # Function for deleting employee by admin
 def employee_delete():
     if session.get("user_option") == "admin":
-        id = request.args.get("id")
+        admin_email = session.get("email")
 
-        employee = db.session.query(Employee).filter_by(id=id).first()
+        id = request.args.get("id")
+        employee = Employee.query.get(id)
+
         if employee:
-            db.session.delete(employee)
-            db.session.commit()
-            flash("Employee deleted successfully.", "success")
+            if admin_email == employee.email:
+                flash("You cannot delete yourself!", "error")
+            else:
+                db.session.delete(employee)
+                db.session.commit()
+                flash("Employee deleted successfully.", "success")
         else:
             flash("Employee not found.", "error")
 
         return redirect(url_for("simple_page.flash_message"))
+
     return redirect(url_for("simple_page.home"))
 
 
